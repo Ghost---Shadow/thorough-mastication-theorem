@@ -204,13 +204,6 @@ The author is unaffiliated and has no endorsement for arXiv cs.LG. If you are ab
 endorse and think this is worth posting, an endorsement would be a great help. Please open an
 issue.
 
-## Thanks
-
-The idea comes from Sal Khan of Khan Academy. In one of his videos he says (from memory, not
-a quote) that the biggest problem with schooling is that each lesson gets a fixed time, so a
-class moves on before every doubt and mistake is cleared. Plain SGD makes the same mistake:
-one step per batch, then on to the next. TMT-SGD waits.
-
 ## Citation
 
 ```bibtex
