@@ -49,6 +49,26 @@ number. For `mlp` at 0.3 it did not, for both chews. Every other rate of every t
 finite. So the list for `mlp` is now 0.1, 0.03, 0.01. No loss from that check was looked at
 or kept, and no prediction was changed.
 
+## Second amendment of 26 Nov 2026: the stop rule is applied, once
+
+After the 750 runs, the best learning rate of plain SGD was at an end of its list in 6 of the
+10 settings (the first results are in `docs/results-20261126.md`):
+
+- `linear`: at the top (3) with clean labels, stream and pool; at the bottom (0.3) with noisy
+  labels and a pool.
+- `mlp`: at the top (0.1) with clean labels, stream and pool; at the bottom (0.01) with noisy
+  labels and a pool.
+- `digits`: never.
+
+So one rate is added on each side where this happened, for every chew of the task: 9 and 0.1
+for `linear`, 0.3 and 0.003 for `mlp`. That is 400 more runs, 1,150 in all. The rate 0.3 for
+`mlp` is the one that diverged in the check of the first amendment; the rule adds it all the
+same, and a run that diverges counts as the worst.
+
+This is the one change the stop rule allows. No rate is added after it, even if a best rate
+is at an end again. The predictions and the scoring rule are unchanged, and they are scored
+again on all the runs.
+
 ## What would count as the idea working
 
 P2 holding is the idea working in the sense the theorems support: fewer examples loaded for

@@ -52,7 +52,10 @@ TASKS = ["linear", "mlp", "digits"]
 NOISES = {"linear": [0.0, 0.5], "mlp": [0.0, 0.5], "digits": [0.0, 0.2]}
 DATA_MODES = {"linear": ["stream", "pool"], "mlp": ["stream", "pool"], "digits": ["pool"]}
 CHEWS = ["1", "4", "16", "64", "until"]
-RATES = {"linear": [3.0, 1.0, 0.3], "mlp": [0.1, 0.03, 0.01], "digits": [0.3, 0.1, 0.03]}
+# The first and last rate of linear and of mlp were added by the stop rule after the first
+# 750 runs (see the second amendment in PREDICTIONS.md).
+RATES = {"linear": [9.0, 3.0, 1.0, 0.3, 0.1], "mlp": [0.3, 0.1, 0.03, 0.01, 0.003],
+         "digits": [0.3, 0.1, 0.03]}
 SEEDS = [0, 1, 2, 3, 4]
 
 # Columns of a log row: steps, examples seen, test loss, validation loss, test accuracy.
