@@ -1,0 +1,144 @@
+results file: experiments/results/runs.jsonl; runs read: 750; runs of the plan done: 750 of 750
+
+linear, noise 0.0, stream
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  3.0    0.000012          320000         0.000805   1.00          
+      4  3.0    0.000112          80000          0.003310   4.00          
+     16  3.0    0.005389          20000          0.014688   16.00         
+     64  1.0    0.096736          5024           0.042998   63.69         
+  until  3.0    0.009245          16858          0.017467   18.98         
+
+linear, noise 0.0, pool
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  3.0    0.031201          320000         0.000747   1.00          
+      4  3.0    0.035988          80000          0.003004   4.00          
+     16  3.0    0.052080          20000          0.012307   16.00         
+     64  3.0    0.118062          5024           0.039501   63.69         
+  until  3.0    0.054053          16883          0.014501   18.95         
+
+linear, noise 0.5, stream
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  1.0    0.011899          320000         0.001720   1.00          
+      4  1.0    0.044821          80000          0.014195   4.00          
+     16  0.3    0.092398          20000          0.019938   16.00         
+     64  0.3    0.208809          5024           0.077317   63.69         
+  until  3.0    0.234162          16806          0.105949   19.04         
+
+linear, noise 0.5, pool
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  0.3    0.185207          320000         0.000147   1.00          
+      4  0.3    0.188606          80000          0.001846   4.00          
+     16  0.3    0.205363          20000          0.014921   16.00         
+     64  0.3    0.246549          5024           0.063446   63.69         
+  until  1.0    0.290501          5523           0.091688   57.94         
+
+mlp, noise 0.0, stream
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  0.1    0.001160          320000         0.000468   1.00          
+      4  0.1    0.001626          80000          0.001135   4.00          
+     16  0.01   0.002158          20000          0.000779   16.00         
+     64  0.03   0.002753          5024           0.003294   63.69         
+  until  0.1    0.004164          1843           0.004637   173.91        
+
+mlp, noise 0.0, pool
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  0.1    0.001485          320000         0.000385   1.00          
+      4  0.03   0.001884          80000          0.000423   4.00          
+     16  0.1    0.002249          20000          0.001315   16.00         
+     64  0.03   0.002676          5024           0.003071   63.69         
+  until  0.01   0.003834          1280           0.004264   250.00        
+
+mlp, noise 0.5, stream
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  0.03   0.001938          320000         0.000564   1.00          
+      4  0.01   0.003093          80000          0.000787   4.00          
+     16  0.01   0.006416          20000          0.005470   16.00         
+     64  0.01   0.010162          5024           0.016759   63.69         
+  until  0.01   0.014454          1280           0.029892   250.00        
+
+mlp, noise 0.5, pool
+  chew  rate   median test loss  examples seen  mean rise  steps per chew
+      1  0.01   0.002865          320000         0.000057   1.00          
+      4  0.01   0.003472          80000          0.000767   4.00          
+     16  0.01   0.007097          20000          0.005205   16.00         
+     64  0.01   0.008204          5024           0.016009   63.69         
+  until  0.01   0.015521          1280           0.027615   250.00        
+
+digits, noise 0.0, pool
+  chew  rate   median test loss  examples seen  mean rise  steps per chew  median test accuracy
+      1  0.1    0.140796          316355         0.000198   1.00            0.9640
+      4  0.1    0.137510          79100          0.002762   4.00            0.9640
+     16  0.03   0.138533          19775          0.007891   16.00           0.9600
+     64  0.03   0.142695          4979           0.030366   63.69           0.9600
+  until  0.3    0.195167          1937           0.050798   164.54          0.9600
+
+digits, noise 0.2, pool
+  chew  rate   median test loss  examples seen  mean rise  steps per chew  median test accuracy
+      1  0.1    0.439712          316355         0.018852   1.00            0.9080
+      4  0.1    0.490184          79100          0.123316   4.00            0.8800
+     16  0.03   0.510256          19775          0.106699   16.00           0.8600
+     64  0.03   0.508941          4979           0.308202   63.69           0.8680
+  until  0.3    0.760119          3964           0.919373   80.01           0.7800
+
+P1, per gradient step: clean labels, new data
+  linear noise 0.0 stream at equal steps, chew 4 is lower than chew 1 in 0 of 5 seeds
+  linear noise 0.0 stream at equal steps, chew 16 is lower than chew 1 in 0 of 5 seeds
+  linear noise 0.0 stream at equal steps, chew 64 is lower than chew 1 in 0 of 5 seeds
+  linear noise 0.0 stream at equal steps, chew until is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 stream at equal steps, chew 4 is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 stream at equal steps, chew 16 is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 stream at equal steps, chew 64 is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 stream at equal steps, chew until is lower than chew 1 in 0 of 5 seeds
+P1: holds
+
+P2, per example: clean labels, new data, equal examples seen
+  linear at equal examples seen, chew 64 is lower than chew 1 in 5 of 5 seeds
+  mlp at equal examples seen, chew 64 is lower than chew 1 in 5 of 5 seeds
+P2: holds
+P2 (mlp, reported apart): holds
+
+P3, noise: noisy labels, new data
+  linear noise 0.5 stream at equal steps, chew 1 is lower than chew 64 in 5 of 5 seeds
+  linear noise 0.5 stream at equal steps, chew 1 is lower than chew until in 5 of 5 seeds
+  mlp noise 0.5 stream at equal steps, chew 1 is lower than chew 64 in 5 of 5 seeds
+  mlp noise 0.5 stream at equal steps, chew 1 is lower than chew until in 5 of 5 seeds
+P3: holds
+
+P4, forgetting: clean labels, mean rise in the loss on the previous batch
+  linear stream: rise is larger for chew 64 than for chew 1 in 5 of 5 seeds; means 0.042998 and 0.000805
+  linear pool: rise is larger for chew 64 than for chew 1 in 5 of 5 seeds; means 0.039501 and 0.000747
+  mlp stream: rise is larger for chew 64 than for chew 1 in 5 of 5 seeds; means 0.003294 and 0.000468
+  mlp pool: rise is larger for chew 64 than for chew 1 in 5 of 5 seeds; means 0.003071 and 0.000385
+  digits pool: rise is larger for chew 64 than for chew 1 in 5 of 5 seeds; means 0.030366 and 0.000198
+P4: holds
+
+P5, a fixed pool and the digits (a guess)
+  linear noise 0.0 pool at equal steps, chew 4 is lower than chew 1 in 0 of 5 seeds
+  linear noise 0.0 pool at equal steps, chew 16 is lower than chew 1 in 0 of 5 seeds
+  linear noise 0.0 pool at equal steps, chew 64 is lower than chew 1 in 0 of 5 seeds
+  linear noise 0.0 pool at equal steps, chew until is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 pool at equal steps, chew 4 is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 pool at equal steps, chew 16 is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 pool at equal steps, chew 64 is lower than chew 1 in 0 of 5 seeds
+  mlp noise 0.0 pool at equal steps, chew until is lower than chew 1 in 0 of 5 seeds
+  digits noise 0.0 pool at equal steps, chew 4 is lower than chew 1 in 4 of 5 seeds
+  digits noise 0.0 pool at equal steps, chew 16 is lower than chew 1 in 3 of 5 seeds
+  digits noise 0.0 pool at equal steps, chew 64 is lower than chew 1 in 2 of 5 seeds
+  digits noise 0.0 pool at equal steps, chew until is lower than chew 1 in 0 of 5 seeds
+  digits noise 0.2 pool at equal steps, chew 1 is lower than chew 64 in 5 of 5 seeds
+P5: fails
+
+Stop rule: is the best rate of plain SGD (chew 1) at an end of its list?
+  linear noise 0.0 stream: True
+  linear noise 0.0 pool: True
+  linear noise 0.5 stream: False
+  linear noise 0.5 pool: True
+  linear: at an end in 3 of 4 settings
+  mlp noise 0.0 stream: True
+  mlp noise 0.0 pool: True
+  mlp noise 0.5 stream: False
+  mlp noise 0.5 pool: True
+  mlp: at an end in 3 of 4 settings
+  digits noise 0.0 pool: False
+  digits noise 0.2 pool: False
+  digits: at an end in 0 of 2 settings

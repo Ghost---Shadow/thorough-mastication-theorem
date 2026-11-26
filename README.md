@@ -2,9 +2,9 @@
 
 *Chew each batch before you swallow it.*
 
-**Status, 26 Nov 2026.** The idea, and ten theorems about it proved in Lean for a model that
-is linear in its weights. There are no experiments yet, so whether it helps a real network is
-not known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
+**Status, 26 Nov 2026.** The idea, ten theorems about it proved in Lean for a model that is
+linear in its weights, and a first test on toy models. Whether it helps a large network is not
+known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
 **checked with numbers** (by `scripts/check_claims.py`, not proved), **my reading**,
 **recalled** (from memory, not checked against the source).
 
@@ -131,12 +131,22 @@ honest test on small models.
 
 ## Experiments
 
-**None run yet.** What the argument above predicts, so that a test can prove it wrong:
+**Run on 26 Nov 2026: 750 toy runs.** The results are in
+[docs/results-20261126.md](docs/results-20261126.md). What the argument above predicted, and
+what happened:
 
 - **Per gradient step**, with clean labels and fresh data, chewing does not beat plain SGD.
-- **Per example loaded**, with clean labels, chewing beats plain SGD.
-- **With noisy labels**, plain SGD beats long chews.
-- **Forgetting** of the previous batch grows with the length of the chew.
+  *Held:* plain SGD was lower in every seed, and by a wide margin.
+- **Per example loaded**, with clean labels, chewing beats plain SGD. *Held:* chew 64 was
+  lower in 5 of 5 seeds, for 64 times the gradient steps.
+- **With noisy labels**, plain SGD beats long chews. *Held* in 5 of 5 seeds.
+- **Forgetting** of the previous batch grows with the length of the chew. *Held.*
+- A guess that no chew helps on a fixed pool of data *failed*: on the clean digits, a chew of
+  4 steps ended with a slightly lower test loss than plain SGD in 4 of 5 seeds.
+
+So on these toys the method is the better use of each batch and the worse use of each
+gradient step. The verdicts are provisional: the stop rule allows one more learning rate
+where plain SGD's best rate was at an end of its list, and those runs have not been made.
 
 The models, the data and the training loop are in
 [docs/experiment-plan.md](docs/experiment-plan.md). The exact predictions, the criterion and
