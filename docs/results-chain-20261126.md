@@ -55,7 +55,9 @@ In the words used before: the curriculum (the order) carried the result, and the
 - **It is the smallest possible chain.** One weight per chapter, no data, no noise. A chapter
   was hard only in that it learned slowly.
 - **The budget was generous.** Every pacing got as many steps as mastery needed. A test with
-  too few steps to finish might separate the two; that was not in the plan and was not run.
+  too few steps to finish might separate the two. That was not in this plan; it was run
+  afterwards as a second test, with its own predictions, and is reported at the end of this
+  page.
 - **The goal was the last chapter alone.** If every chapter has to be right at the end, both
   pacings failed here (K4), and neither was built to prevent that.
 - **K3 was a guess**, and it was marked as one. Its failure is a result about this toy, not a
