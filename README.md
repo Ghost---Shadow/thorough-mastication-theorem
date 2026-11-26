@@ -186,6 +186,37 @@ was never better than shuffled SGD ([docs/results-class-order-20261126.md](docs/
 Test accuracy fell from 93% with one step per batch to 32% with 64, and to 10% when each
 class was done once and left: the model then answered "9", the last class, for every image.
 
+## The picture: hunters at a kill
+
+The author's picture of the trade-off. A pack of stone-age hunters has brought down a deer
+and is eating it on the spot. Chew each mouthful for a long time and you get more out of it,
+but you get fewer mouthfuls before the deer is gone. So it is a trade-off.
+
+| At the kill | In training |
+|---|---|
+| A mouthful | A batch |
+| Chewing longer | More gradient steps on the same batch |
+| Nutrients per mouthful | Loss removed per example loaded |
+| Number of mouthfuls | Number of batches seen |
+| The pack eating too: the deer runs out | The budget of gradient steps |
+
+- **Chewing has falling returns.** Each further step on the same batch removes a fixed share
+  of what is left, so the first chews get most of it (**proved** in the library:
+  `one_step_shrinks_one_direction`, `strong_directions_first`).
+- **How long to chew depends on what the next mouthful costs.** With the deer in front of
+  you the next bite is free, so you take many quick bites: that is data in memory, where
+  plain SGD won. If every mouthful had to be fetched from far away, you would chew each one
+  properly: that is a machine where loading is the slow part.
+- **Where the picture stops fitting.** A mouthful never makes an earlier mouthful worse. A
+  batch can undo what another batch taught. That is the forgetting, and the reason one class
+  at a time failed on MNIST.
+
+**A rule this suggests (my reading, not tested).** Stop stepping on a batch when one more step
+would gain less than a first step on a fresh batch, counting what it costs to load that
+batch. This gives one step when loading is free and more when loading is slow. Foraging
+theory has a result of this shape, the marginal value theorem: leave a patch when the gain
+there falls to the average you would get by moving on (**recalled**).
+
 ## When mastication can win
 
 Time-boxing wins when gradient steps are the cost. Mastication can win when loading is the
