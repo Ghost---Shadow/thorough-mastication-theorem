@@ -154,7 +154,9 @@ enormously: with the same steps, going through the chapters in order solved the 
 chapter, and working on the last chapter alone did not move it. The pace did not matter:
 moving on after a fixed number of steps did as well as staying until each chapter was
 mastered, against my guess. So this toy supports "no chapter 4 without chapter 3" and gives
-no support to mastery pacing.
+no support to mastery pacing. A second test, with too few steps to finish, went further:
+mastery pacing never left the hard chapter and made no progress on the goal, while a fixed
+time per chapter reached it.
 
 ## This is not new for linear models
 

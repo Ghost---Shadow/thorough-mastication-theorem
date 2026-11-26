@@ -60,3 +60,31 @@ In the words used before: the curriculum (the order) carried the result, and the
   pacings failed here (K4), and neither was built to prevent that.
 - **K3 was a guess**, and it was marked as one. Its failure is a result about this toy, not a
   proof that pacing never matters.
+
+# A second test: too few steps to finish
+
+The first test gave every pacing as many steps as mastery needed. This one gives less: 25%,
+50% and 75% of them, with chapter 2 learning 64 times more slowly. Its predictions were
+committed before its code, in
+[../experiments/PREDICTIONS-chain-tight-budget.md](../experiments/PREDICTIONS-chain-tight-budget.md).
+The output is in `experiments/results/chain-tight-budget-summary.txt`
+(`python experiments/chain.py --tight`).
+
+| | Prediction | Verdict | Measured |
+|---|---|---|---|
+| T1 | Mastery never leaves the hard chapter, and ends with an error of at least 0.5 on chapter 6 | **holds** | still on chapter 2 at all three budgets; error on chapter 6 of 0.9998 or more |
+| T2 | (a guess) Time-boxed reaches the goal at 50% and 75% | **holds** | error on chapter 6 below 1e-31 at both |
+
+At 25%, where no prediction was made, time-boxed also reached the goal.
+
+**What this says.** With limited time, mastery pacing did not leave the chapter it could not
+finish. It needed 1,631 steps to leave chapter 2 and never had them, so it never met chapters
+3 to 6 and made no progress on the goal. A fixed time per chapter moved on, and the later
+chapters made up for the hard one. Sal Khan objects to the fixed time per lesson; in this toy
+the fixed time is what got the learner to the end.
+
+**What it does not say.** It is the same smallest chain, with one weight per chapter. The
+goal was chapter 6 alone: time-boxed got there with the earlier chapters left wrong (errors
+of 0.4 to 2.7), which a teacher would call learning the last chapter by rote. Mastery left
+chapters 1 and 2 nearly right and everything after untouched. Which of those is better
+depends on what is asked for at the end, and this test asked only for chapter 6.

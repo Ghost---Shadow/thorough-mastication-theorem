@@ -1,0 +1,33 @@
+
+mastery needs 1677 steps in all, 1631 of them to leave chapter 2
+
+budget 419 steps (25%), a box is 69 steps; mastery was on chapter 2 when the steps ran out
+  mastery    error of chapters 1 to 6: 1.12e-02  1.97e-01  8.92e-01  9.89e-01  9.99e-01  1.00e+00
+             weights: 1.106  0.503  0.100  0.100  0.100  0.100
+  time_boxed error of chapters 1 to 6: 3.79e-01  1.14e+00  2.67e+00  2.31e+00  8.02e-01  1.23e-32
+             weights: 1.616  1.281  1.272  0.957  0.752  0.528
+
+budget 838 steps (50%), a box is 139 steps; mastery was on chapter 2 when the steps ran out
+  mastery    error of chapters 1 to 6: 4.55e-02  1.98e-02  8.36e-01  9.83e-01  9.98e-01  1.00e+00
+             weights: 1.213  0.708  0.100  0.100  0.100  0.100
+  time_boxed error of chapters 1 to 6: 3.86e-01  1.18e+00  2.67e+00  2.31e+00  8.03e-01  1.23e-32
+             weights: 1.621  1.286  1.263  0.957  0.752  0.527
+
+budget 1257 steps (75%), a box is 209 steps; mastery was on chapter 2 when the steps ran out
+  mastery    error of chapters 1 to 6: 6.29e-02  1.29e-03  8.16e-01  9.81e-01  9.98e-01  1.00e+00
+             weights: 1.251  0.771  0.100  0.100  0.100  0.100
+  time_boxed error of chapters 1 to 6: 3.93e-01  1.22e+00  2.68e+00  2.32e+00  8.04e-01  4.93e-32
+             weights: 1.627  1.293  1.253  0.957  0.752  0.527
+
+T1: at every budget mastery is still on the hard chapter, with an error of at least 0.5 on the last chapter
+  budget 25%: true   on chapter 2, error on the last chapter 0.9999
+  budget 50%: true   on chapter 2, error on the last chapter 0.9998
+  budget 75%: true   on chapter 2, error on the last chapter 0.9998
+T1: holds
+
+T2: at 50% and 75%, time-boxed ends with an error of at most 0.01 on the last chapter
+  budget 50%: true   error on the last chapter 1.233e-32
+  budget 75%: true   error on the last chapter 4.930e-32
+T2: holds
+
+At 25% (no prediction): time-boxed error on the last chapter 1.233e-32
