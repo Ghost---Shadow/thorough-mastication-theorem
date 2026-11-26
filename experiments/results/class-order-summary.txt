@@ -1,0 +1,48 @@
+done shuffled seed 0: accuracy 0.9322
+done round_1 seed 0: accuracy 0.9325
+done round_4 seed 0: accuracy 0.8508
+done round_16 seed 0: accuracy 0.5832
+done round_64 seed 0: accuracy 0.3290
+done once seed 0: accuracy 0.1009
+done shuffled seed 1: accuracy 0.9343
+done round_1 seed 1: accuracy 0.9340
+done round_4 seed 1: accuracy 0.7758
+done round_16 seed 1: accuracy 0.5168
+done round_64 seed 1: accuracy 0.3300
+done once seed 1: accuracy 0.1009
+done shuffled seed 2: accuracy 0.9346
+done round_1 seed 2: accuracy 0.9338
+done round_4 seed 2: accuracy 0.8558
+done round_16 seed 2: accuracy 0.5649
+done round_64 seed 2: accuracy 0.3063
+done once seed 2: accuracy 0.1009
+done shuffled seed 3: accuracy 0.9325
+done round_1 seed 3: accuracy 0.9313
+done round_4 seed 3: accuracy 0.8550
+done round_16 seed 3: accuracy 0.5955
+done round_64 seed 3: accuracy 0.3163
+done once seed 3: accuracy 0.1009
+done shuffled seed 4: accuracy 0.9370
+done round_1 seed 4: accuracy 0.9332
+done round_4 seed 4: accuracy 0.8355
+done round_16 seed 4: accuracy 0.5361
+done round_64 seed 4: accuracy 0.3285
+done once seed 4: accuracy 0.1009
+Summary from class-order.json
+schedule      mean  per-seed accuracy
+shuffled    0.9341  0.9322 0.9343 0.9346 0.9325 0.9370
+round_1     0.9330  0.9325 0.9340 0.9338 0.9313 0.9332
+round_4     0.8346  0.8508 0.7758 0.8558 0.8550 0.8355
+round_16    0.5593  0.5832 0.5168 0.5649 0.5955 0.5361
+round_64    0.3220  0.3290 0.3300 0.3063 0.3163 0.3285
+once        0.1009  0.1009 0.1009 0.1009 0.1009 0.1009
+runs with a non-finite loss: none
+C1 every one-class schedule below shuffled, per seed [False, True, True, True, True]: holds (4 of 5 seeds)
+C2 round_64 below round_1, per seed [True, True, True, True, True]: holds (5 of 5 seeds)
+C3 once: accuracy at most 0.30 and share answered as 9 at least 0.90
+  seed 0: accuracy 0.1009, share answered as 9 1.0000
+  seed 1: accuracy 0.1009, share answered as 9 1.0000
+  seed 2: accuracy 0.1009, share answered as 9 1.0000
+  seed 3: accuracy 0.1009, share answered as 9 1.0000
+  seed 4: accuracy 0.1009, share answered as 9 1.0000
+C3 holds (5 of 5 seeds)

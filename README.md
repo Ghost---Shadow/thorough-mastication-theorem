@@ -5,9 +5,12 @@
 **Time-box, or stay until it is learned?** That is the dilemma this repository tests: give
 each batch or chapter a fixed time and move on, or stay on it until it is mastered.
 
-**The verdict so far, on toy models: time-box.** In every test where the two differed on the
-goal, moving on after a fixed time did as well or better. The one thing staying bought was
-fewer examples loaded for the same loss.
+**The verdict so far: time-box.** The theory and the toy runs point the same way. The
+theorems give the reasons: each further step on the same batch gains less than the one before,
+and in a chain a later chapter can make up for an earlier one. The runs agree: in every test
+where the two differed on the goal, moving on after a fixed time did as well or better. The
+one thing staying bought was fewer examples loaded for the same loss. All of it is on toy
+models.
 
 *Summary of 26 Nov 2026:*
 
@@ -176,6 +179,11 @@ mastered, against my guess. So this toy supports "no chapter 4 without chapter 3
 no support to mastery pacing. A second test, with too few steps to finish, went further:
 mastery pacing never left the hard chapter and made no progress on the goal, while a fixed
 time per chapter reached it.
+
+**One class at a time, on MNIST.** Masticating a batch of 0s, then a batch of 1s, and so on,
+was never better than shuffled SGD ([docs/results-class-order-20261126.md](docs/results-class-order-20261126.md)).
+Test accuracy fell from 93% with one step per batch to 32% with 64, and to 10% when each
+class was done once and left: the model then answered "9", the last class, for every image.
 
 ## This is not new for linear models
 
