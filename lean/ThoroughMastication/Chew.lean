@@ -15,6 +15,16 @@ For a model linear in its weights:
 * `total_squared_forgetting_is_bounded` : the changes in the errors of an old batch, squared
   and added up over all chews, stay under a ceiling that does not grow with the chews.
 
+A chew as a probe of what one batch teaches about another:
+* `chewing_a_batch_that_already_fits_moves_nothing` : a duplicate of a batch already chewed
+  needs no travel.
+* `what_the_batch_spans_is_learned_with_it` : a batch whose outputs are a combination of
+  this batch's outputs is fitted with it, with no step taken on it.
+* `chewing_a_batch_with_separate_features_changes_nothing_elsewhere` : a batch that shares
+  no features is left exactly alone.
+* `error_elsewhere_is_at_most_distance_times_what_sticks_out` : in between, the error on
+  another example is bounded by how far its features stick out of what the batch spans.
+
 For one number fitted to a batch:
 * `batch_mean_is_the_best_single_number` : the batch mean is the best guess, so a chew to
   convergence keeps nothing of the start.
@@ -290,6 +300,161 @@ theorem total_squared_forgetting_is_bounded
         mul_le_mul_of_nonneg_left travel_runs_out (sq_nonneg _)
 
 end Chew
+
+/-! ### A chew as a probe: what one batch teaches about another -/
+
+section Probe
+
+open ContinuousLinearMap
+
+variable {Weights Outputs OtherOutputs : Type*}
+  [NormedAddCommGroup Weights] [InnerProductSpace ℝ Weights]
+  [CompleteSpace Weights]
+  [NormedAddCommGroup Outputs] [InnerProductSpace ℝ Outputs]
+  [CompleteSpace Outputs]
+  [NormedAddCommGroup OtherOutputs] [InnerProductSpace ℝ OtherOutputs]
+  [CompleteSpace OtherOutputs]
+
+/-- **A batch that already fits needs no travel.** If the start weights fit the batch, a chew
+of that batch leaves them where they are. A duplicate of a batch already chewed is such a
+batch. -/
+theorem chewing_a_batch_that_already_fits_moves_nothing
+    (predict : Weights →L[ℝ] Outputs)
+    {labels : Outputs}
+    {start_weights : Weights}
+    {chewed_weights : Weights}
+    (start_already_fits : predict start_weights = labels)
+    (is_a_chew : IS_A_CHEW predict labels start_weights chewed_weights) :
+    chewed_weights = start_weights := by
+  obtain ⟨chew_fits, vector, weights_move_along_features⟩ := is_a_chew
+  -- Both ends fit the batch, so the move is unseen by the batch.
+  have move_is_unseen : predict (chewed_weights - start_weights) = 0 := by
+    rw [map_sub, chew_fits, start_already_fits, sub_self]
+  -- It is also along the features, so it is at right angles to itself.
+  have move_is_at_right_angles_to_itself :
+      inner ℝ (chewed_weights - start_weights) (chewed_weights - start_weights) = 0 :=
+    a_move_along_the_features_is_at_right_angles_to_what_the_batch_does_not_see
+      predict weights_move_along_features move_is_unseen
+  exact sub_eq_zero.mp (inner_self_eq_zero.mp move_is_at_right_angles_to_itself)
+
+/-- **The travel of a chew is at most the distance to a full fit.** -/
+theorem travel_of_a_chew_is_at_most_the_distance_to_a_full_fit
+    (predict : Weights →L[ℝ] Outputs)
+    {labels : Outputs}
+    {start_weights : Weights}
+    {chewed_weights : Weights}
+    {full_fit : Weights}
+    (is_a_chew : IS_A_CHEW predict labels start_weights chewed_weights)
+    (full_fit_fits : predict full_fit = labels) :
+    let travel          := ‖chewed_weights - start_weights‖
+    let distance_before := ‖start_weights - full_fit‖
+    travel ≤ distance_before := by
+  unfold_named_pieces
+  have squares : ‖start_weights - full_fit‖ ^ 2
+      = ‖chewed_weights - full_fit‖ ^ 2 + ‖chewed_weights - start_weights‖ ^ 2 :=
+    chew_brings_weights_closer_by_exactly_its_travel predict is_a_chew full_fit_fits
+  by_contra travel_is_longer
+  rw [not_le] at travel_is_longer
+  nlinarith [norm_nonneg (start_weights - full_fit),
+    norm_nonneg (chewed_weights - start_weights),
+    sq_nonneg ‖chewed_weights - full_fit‖]
+
+omit [CompleteSpace Weights] [CompleteSpace Outputs] [CompleteSpace OtherOutputs] in
+/-- **What the batch spans is learned with it.** Take another batch whose outputs are a
+combination of the outputs of this batch, whatever the weights. If a full fit of both
+exists, any weights that fit this batch fit the other batch too, with no step taken on it. -/
+theorem what_the_batch_spans_is_learned_with_it
+    (predict : Weights →L[ℝ] Outputs)
+    (other_predict : Weights →L[ℝ] OtherOutputs)
+    (combine : Outputs →L[ℝ] OtherOutputs)
+    {labels : Outputs}
+    {other_labels : OtherOutputs}
+    {weights : Weights}
+    {full_fit : Weights}
+    (other_is_a_combination :
+      ∀ any_weights : Weights, other_predict any_weights = combine (predict any_weights))
+    (weights_fit : predict weights = labels)
+    (full_fit_fits : predict full_fit = labels)
+    (full_fit_fits_other : other_predict full_fit = other_labels) :
+    other_predict weights = other_labels := by
+  rw [other_is_a_combination, weights_fit, ← full_fit_fits, ← other_is_a_combination,
+    full_fit_fits_other]
+
+omit [CompleteSpace Outputs] in
+/-- **A batch that is spanned needs no travel.** After the weights fit a batch, a chew of
+another batch that it spans moves nothing. -/
+theorem a_batch_that_is_spanned_needs_no_travel
+    (predict : Weights →L[ℝ] Outputs)
+    (other_predict : Weights →L[ℝ] OtherOutputs)
+    (combine : Outputs →L[ℝ] OtherOutputs)
+    {labels : Outputs}
+    {other_labels : OtherOutputs}
+    {weights : Weights}
+    {chewed_weights : Weights}
+    {full_fit : Weights}
+    (other_is_a_combination :
+      ∀ any_weights : Weights, other_predict any_weights = combine (predict any_weights))
+    (weights_fit : predict weights = labels)
+    (full_fit_fits : predict full_fit = labels)
+    (full_fit_fits_other : other_predict full_fit = other_labels)
+    (is_a_chew : IS_A_CHEW other_predict other_labels weights chewed_weights) :
+    chewed_weights = weights :=
+  chewing_a_batch_that_already_fits_moves_nothing other_predict
+    (what_the_batch_spans_is_learned_with_it predict other_predict combine
+      other_is_a_combination weights_fit full_fit_fits full_fit_fits_other)
+    is_a_chew
+
+omit [CompleteSpace OtherOutputs] in
+/-- **A batch with separate features is left alone.** If no move along the features of this
+batch changes the outputs of another batch, a chew of this batch leaves the outputs of the
+other batch exactly where they were. -/
+theorem chewing_a_batch_with_separate_features_changes_nothing_elsewhere
+    (predict : Weights →L[ℝ] Outputs)
+    (other_predict : Weights →L[ℝ] OtherOutputs)
+    {start_weights : Weights}
+    {moved_weights : Weights}
+    {vector : Outputs}
+    (weights_move_along_features :
+      moved_weights = start_weights + adjoint predict vector)
+    (features_are_separate :
+      ∀ any_vector : Outputs, other_predict (adjoint predict any_vector) = 0) :
+    other_predict moved_weights = other_predict start_weights := by
+  rw [weights_move_along_features, map_add, features_are_separate, add_zero]
+
+/-- **The error elsewhere is at most the distance times what sticks out.** Take one other
+example with feature vector `feature`. Split it into a part that is a combination of the
+features of the batch and the rest. For weights that fit the batch, the error on that
+example is at most the size of the rest times the distance from the weights to a full fit. -/
+theorem error_elsewhere_is_at_most_distance_times_what_sticks_out
+    (predict : Weights →L[ℝ] Outputs)
+    {labels : Outputs}
+    {weights : Weights}
+    {full_fit : Weights}
+    {feature : Weights}
+    {seen_part : Weights}
+    {unseen_part : Weights}
+    {coefficients : Outputs}
+    (feature_splits : feature = seen_part + unseen_part)
+    (seen_part_is_a_combination : seen_part = adjoint predict coefficients)
+    (weights_fit : predict weights = labels)
+    (full_fit_fits : predict full_fit = labels) :
+    let error_elsewhere := |inner ℝ feature weights - inner ℝ feature full_fit|
+    let sticking_out    := ‖unseen_part‖
+    let distance        := ‖weights - full_fit‖
+    error_elsewhere ≤ sticking_out * distance := by
+  unfold_named_pieces
+  have rest_is_unseen : predict (weights - full_fit) = 0 := by
+    rw [map_sub, weights_fit, full_fit_fits, sub_self]
+  -- The part of the feature that the batch spans sees no difference between the two.
+  have only_what_sticks_out_counts :
+      inner ℝ feature weights - inner ℝ feature full_fit
+        = inner ℝ unseen_part (weights - full_fit) := by
+    rw [← inner_sub_right, feature_splits, inner_add_left, seen_part_is_a_combination,
+      adjoint_inner_left, rest_is_unseen, inner_zero_right, zero_add]
+  rw [only_what_sticks_out_counts]
+  exact abs_real_inner_le_norm _ _
+
+end Probe
 
 /-! ### One number fitted to a batch: a chew keeps nothing of the past -/
 

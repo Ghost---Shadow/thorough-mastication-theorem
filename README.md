@@ -2,8 +2,8 @@
 
 *Chew each batch before you swallow it.*
 
-**Status, 26 Nov 2026.** The idea, ten theorems about it proved in Lean for a model that is
-linear in its weights, and a first test on toy models. Whether it helps a large network is not
+**Status, 26 Nov 2026.** The idea, sixteen theorems about it proved in Lean for a model that
+is linear in its weights, and a first test on toy models. Whether it helps a large network is not
 known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
 **checked with numbers** (by `scripts/check_claims.py`, not proved), **my reading**,
 **recalled** (from memory, not checked against the source).
@@ -118,6 +118,22 @@ private.
 - Reason 2 holds in the form of C1 when a full fit exists. It fails in the form of C4 when
   the labels are noisy and the model is small.
 - Forgetting is real but bounded, and it shrinks as the chews get shorter (C3).
+
+## A second use: a chew as a probe of a dataset
+
+The toy runs say chewing is a poor way to train. The theorems say it is an exact way to read
+a batch: by C2 a chew takes everything the batch has to give, so what is still wrong
+afterwards is what the batch did not contain. Six more theorems make that precise
+(`docs/proofs.md`, sections 7 to 10): a duplicate needs no travel, a batch that is spanned is
+learned for free, a batch with separate features is left alone, and in between the error is
+bounded by how far an example sticks out.
+
+**Cross-mastication** uses this. Chew each batch from the same start and measure the loss on
+every other batch. The table of results is meant to show duplicates, groups, batches that
+cover others, and batches with wrong labels. The plan, with datasets where the answer is
+planted, is in [docs/cross-chew-plan.md](docs/cross-chew-plan.md), and its predictions are in
+[experiments/PREDICTIONS-cross-chew.md](experiments/PREDICTIONS-cross-chew.md). It has not
+been run.
 
 ## This is not new for linear models
 

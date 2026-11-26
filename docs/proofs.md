@@ -126,6 +126,70 @@ mean. It is checked with numbers in `scripts/check_claims.py`.
 **Lean:** `loss_of_a_guess_is_loss_of_the_batch_mean_plus_the_miss`,
 `batch_mean_is_the_best_single_number`
 
+# A chew as a probe of a dataset
+
+The sections above ask whether chewing is a good way to train. These ask what a chew tells
+you about the data. By section 3 a chew takes everything a batch has to give, so what is still
+wrong afterwards is what the batch did not contain.
+
+## 7. A batch that already fits needs no travel
+
+**Statement.** If the weights already fit a batch, a chew of that batch leaves them where they
+are. A duplicate of a batch that was just chewed is such a batch.
+
+**So:** the travel of a chew measures how new its batch is. It is zero for a duplicate, and by
+section 2 it is never more than the distance to a full fit.
+
+**Why.** Before and after the chew the weights fit the batch, so the move is unseen by the
+batch. The move is also along the features. By section 1 it is at right angles to itself, and
+only the zero move is.
+
+**Lean:** `chewing_a_batch_that_already_fits_moves_nothing`,
+`travel_of_a_chew_is_at_most_the_distance_to_a_full_fit`
+
+## 8. What the batch spans is learned with it
+
+**Statement.** Take another batch whose outputs are always a combination of this batch's
+outputs: each of its examples has features that are a combination of this batch's features.
+Suppose a full fit of both exists. Then any weights that fit this batch fit the other batch
+too. No step was taken on it.
+
+**So:** after chewing this batch, a chew of the other batch moves nothing.
+
+**Why.** The other batch's outputs are the combination of this batch's outputs. This batch's
+outputs are its labels, both for the weights and for the full fit. So the other batch's
+outputs are the same for the weights and for the full fit, and the full fit gives its labels.
+
+**Lean:** `what_the_batch_spans_is_learned_with_it`, `a_batch_that_is_spanned_needs_no_travel`
+
+## 9. A batch with separate features is left alone
+
+**Statement.** If no move along the features of this batch changes the outputs of another
+batch, a chew of this batch leaves the outputs of the other batch exactly where they were.
+
+**Why.** A chew is a move along the features of its batch, and such a move changes nothing
+on the other batch by assumption. The library proves the same for gradient steps
+(`separate_features_forget_nothing`).
+
+**Lean:** `chewing_a_batch_with_separate_features_changes_nothing_elsewhere`
+
+## 10. In between: the error elsewhere is at most the distance times what sticks out
+
+**Statement.** Take one other example. Split its feature vector into a part that is a
+combination of the batch's features and the rest, the part that sticks out. For weights that
+fit the batch,
+
+    error on that example ≤ (size of the part that sticks out) × (distance from the weights to a full fit)
+
+Sections 8 and 9 are the two ends: nothing sticks out, or everything does.
+
+**Why.** The weights and the full fit both fit the batch, so their difference is unseen by the
+batch. The part of the feature vector that the batch spans sees no difference between them.
+Only the part that sticks out does, and an inner product is at most the product of the two
+lengths.
+
+**Lean:** `error_elsewhere_is_at_most_distance_times_what_sticks_out`
+
 ## How this meets the squiggly line
 
 The library's picture of training is travel: a model moves from its start to a fit, and what
