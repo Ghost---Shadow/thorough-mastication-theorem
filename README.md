@@ -132,8 +132,9 @@ bounded by how far an example sticks out.
 every other batch. The table of results is meant to show duplicates, groups, batches that
 cover others, and batches with wrong labels. The plan, with datasets where the answer is
 planted, is in [docs/cross-mastication-plan.md](docs/cross-mastication-plan.md), and its predictions are in
-[experiments/PREDICTIONS-cross-mastication.md](experiments/PREDICTIONS-cross-mastication.md). It has not
-been run.
+[experiments/PREDICTIONS-cross-mastication.md](experiments/PREDICTIONS-cross-mastication.md). It was run on 26 Nov 2026 and all
+eleven predictions held in every seed; the results and their limits are in
+[docs/results-cross-mastication-20261126.md](docs/results-cross-mastication-20261126.md).
 
 ## This is not new for linear models
 

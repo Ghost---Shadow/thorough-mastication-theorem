@@ -1,0 +1,150 @@
+seeds [0, 1, 2, 3, 4], cap of 20000 steps per mastication
+
+===== model linear =====
+
+Mean table over seeds 0, 1, 2, 3, 4, model linear (row = batch masticated, column = batch measured)
+           0     1     2     3     4     5     6     7     8     9    10    11    12    13    14    15    16    17    18    19
+   0       .  0.46  0.32  0.44  0.14  0.34  1.00  0.43  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     0
+   1    0.41     .  0.26  0.37  0.29  0.28  0.41  1.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     1
+   2    0.29  0.17     .  0.35  0.27  0.25  0.29  0.21  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     2
+   3    0.36  0.37  0.32     .  0.25  0.43  0.36  0.12  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     3
+   4    0.17  0.23  0.27  0.33     .  0.36  0.17  0.25  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     4
+   5    0.38  0.25  0.26  0.41  0.34     .  0.38  0.23  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     5
+   6    1.00  0.46  0.32  0.44  0.14  0.34     .  0.43  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     6
+   7    0.15  0.29  0.11  0.09  0.07  0.12  0.15     .  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     7
+   8    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     .  0.44  0.29  0.23  0.33 -1.10  0.00  0.00  0.00  0.00  0.00  0.00     8
+   9    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.42     .  0.41  0.29  0.35 -1.21  0.00  0.00  0.00  0.00  0.00  0.00     9
+  10    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.23  0.43     .  0.28  0.30 -1.22  0.00  0.00  0.00  0.00  0.00  0.00    10
+  11    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.20  0.33  0.32     .  0.27 -0.82  0.00  0.00  0.00  0.00  0.00  0.00    11
+  12    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.34  0.26  0.23  0.18     . -0.78  0.00  0.00  0.00  0.00  0.00  0.00    12
+  13    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 -0.89 -1.10 -1.11 -0.92 -0.92     .  0.00  0.00  0.00  0.00  0.00  0.00    13
+  14    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00     .  0.26  0.24  0.29  0.36  0.33    14
+  15    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.28     .  0.29  0.32  0.28  0.23    15
+  16    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.29  0.30     .  0.38  0.32  0.26    16
+  17    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.26  0.27  0.35     .  0.30  0.37    17
+  18    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.37  0.26  0.37  0.35     .  0.24    18
+  19    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.27  0.19  0.27  0.40  0.21     .    19
+           0     1     2     3     4     5     6     7     8     9    10    11    12    13    14    15    16    17    18    19
+
+linear: mastications that did not reach their target: 0 of 100 (travel pass: 0 of 100)
+
+Q1: duplicates: entry(0,6) and entry(6,0) both >= 0.99
+  seed 0: true   entry(0,6)=1.0000 entry(6,0)=1.0000
+  seed 1: true   entry(0,6)=1.0000 entry(6,0)=1.0000
+  seed 2: true   entry(0,6)=1.0000 entry(6,0)=1.0000
+  seed 3: true   entry(0,6)=1.0000 entry(6,0)=1.0000
+  seed 4: true   entry(0,6)=1.0000 entry(6,0)=1.0000
+Q1: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q2: covered: entry(1,7) >= 0.99 and entry(7,1) <= 0.9
+  seed 0: true   entry(1,7)=1.0000 entry(7,1)=0.3476
+  seed 1: true   entry(1,7)=1.0000 entry(7,1)=0.2223
+  seed 2: true   entry(1,7)=1.0000 entry(7,1)=0.4800
+  seed 3: true   entry(1,7)=1.0000 entry(7,1)=0.2270
+  seed 4: true   entry(1,7)=1.0000 entry(7,1)=0.1521
+Q2: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q3: separate groups: every cross-group entry at most 0.001 in size
+  seed 0: true   largest cross-group size=0.000e+00
+  seed 1: true   largest cross-group size=0.000e+00
+  seed 2: true   largest cross-group size=0.000e+00
+  seed 3: true   largest cross-group size=0.000e+00
+  seed 4: true   largest cross-group size=0.000e+00
+Q3: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q4: same group (leaving out 6, 7, 13): mean entry between 0.2 and 0.45
+  seed 0: true   mean same-group entry=0.3721
+  seed 1: true   mean same-group entry=0.2727
+  seed 2: true   mean same-group entry=0.2635
+  seed 3: true   mean same-group entry=0.3243
+  seed 4: true   mean same-group entry=0.2906
+Q4: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q5: bad batch: mean entry(13, 8..12) <= -0.5 and 13 has the lowest own-group mean of 20
+  seed 0: true   mean entry(13, 8..12)=-1.0884 own-group mean of 13=-1.0884 lowest of the others=0.1088
+  seed 1: true   mean entry(13, 8..12)=-1.0701 own-group mean of 13=-1.0701 lowest of the others=-0.0715
+  seed 2: true   mean entry(13, 8..12)=-1.2535 own-group mean of 13=-1.2535 lowest of the others=-0.0324
+  seed 3: true   mean entry(13, 8..12)=-0.5853 own-group mean of 13=-0.5853 lowest of the others=0.0122
+  seed 4: true   mean entry(13, 8..12)=-0.9526 own-group mean of 13=-0.9526 lowest of the others=-0.1163
+Q5: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q6: travel: batch 6 <= 1% of batch 0, batch 7 <= 1% of batch 1
+  seed 0: true   travel6/travel0=2.159e-03 travel7/travel1=5.689e-04
+  seed 1: true   travel6/travel0=1.802e-03 travel7/travel1=7.834e-04
+  seed 2: true   travel6/travel0=1.992e-03 travel7/travel1=3.330e-04
+  seed 3: true   travel6/travel0=2.486e-03 travel7/travel1=5.166e-04
+  seed 4: true   travel6/travel0=2.174e-03 travel7/travel1=5.932e-04
+Q6: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q7: new group untouched: loss on 8 and on 14 before their mastication within 0.1% of the start
+  seed 0: true   |loss8_before/loss8_start-1|=0.000e+00 same for 14=0.000e+00
+  seed 1: true   |loss8_before/loss8_start-1|=0.000e+00 same for 14=0.000e+00
+  seed 2: true   |loss8_before/loss8_start-1|=0.000e+00 same for 14=0.000e+00
+  seed 3: true   |loss8_before/loss8_start-1|=0.000e+00 same for 14=0.000e+00
+  seed 4: true   |loss8_before/loss8_start-1|=0.000e+00 same for 14=0.000e+00
+Q7: holds   (true in 5 of 5 seeds, 4 needed)
+
+Q8: structure recovered: groups are the planted three, duplicates exactly {0,6}, covering exactly 1 covers 7
+  seed 0: true   groups=[[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13], [14, 15, 16, 17, 18, 19]] duplicate pairs=[(0, 6)] covering pairs=[(1, 7)]
+  seed 1: true   groups=[[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13], [14, 15, 16, 17, 18, 19]] duplicate pairs=[(0, 6)] covering pairs=[(1, 7)]
+  seed 2: true   groups=[[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13], [14, 15, 16, 17, 18, 19]] duplicate pairs=[(0, 6)] covering pairs=[(1, 7)]
+  seed 3: true   groups=[[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13], [14, 15, 16, 17, 18, 19]] duplicate pairs=[(0, 6)] covering pairs=[(1, 7)]
+  seed 4: true   groups=[[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13], [14, 15, 16, 17, 18, 19]] duplicate pairs=[(0, 6)] covering pairs=[(1, 7)]
+Q8: holds   (true in 5 of 5 seeds, 4 needed)
+
+===== model mlp =====
+
+Mean table over seeds 0, 1, 2, 3, 4, model mlp (row = batch masticated, column = batch measured)
+           0     1     2     3     4     5     6     7     8     9    10    11    12    13    14    15    16    17    18    19
+   0       .  0.44  0.27  0.44  0.09  0.31  1.00  0.35  0.01  0.01  0.01 -0.02  0.02 -0.03  0.02  0.02  0.04  0.02  0.00  0.00     0
+   1    0.40     .  0.21  0.36  0.24  0.28  0.40  0.97 -0.02 -0.02 -0.03 -0.03  0.01 -0.00  0.02  0.00  0.03 -0.02  0.03 -0.01     1
+   2    0.27  0.12     .  0.33  0.25  0.23  0.27  0.12 -0.00 -0.01 -0.00 -0.02  0.01 -0.02  0.01 -0.00 -0.01  0.01  0.00  0.00     2
+   3    0.36  0.35  0.27     .  0.24  0.44  0.36  0.08 -0.01 -0.01 -0.01 -0.02  0.04  0.01 -0.00 -0.00  0.04  0.01  0.00 -0.00     3
+   4    0.16  0.23  0.23  0.32     .  0.35  0.16  0.30 -0.01 -0.01  0.00 -0.05  0.00 -0.04  0.01 -0.02  0.02  0.03  0.01  0.01     4
+   5    0.39  0.25  0.24  0.40  0.31     .  0.39  0.23 -0.01 -0.01 -0.00 -0.01  0.01  0.01  0.02  0.00  0.03  0.01  0.02  0.01     5
+   6    1.00  0.44  0.27  0.44  0.09  0.31     .  0.35  0.01  0.01  0.01 -0.02  0.02 -0.03  0.02  0.02  0.04  0.02  0.00  0.00     6
+   7    0.13  0.25  0.09  0.08  0.07  0.12  0.13     .  0.01  0.01 -0.01 -0.02  0.00 -0.04 -0.02 -0.01 -0.02  0.01 -0.00  0.01     7
+   8    0.02 -0.02 -0.04 -0.01 -0.02 -0.01  0.02  0.02     .  0.44  0.29  0.18  0.34 -1.24 -0.02 -0.00  0.01  0.02  0.01 -0.01     8
+   9    0.01 -0.01 -0.02 -0.01 -0.01 -0.01  0.01  0.03  0.44     .  0.38  0.25  0.31 -1.27 -0.02  0.01  0.01  0.01  0.01 -0.03     9
+  10    0.02 -0.02 -0.02 -0.00  0.00  0.00  0.02 -0.03  0.23  0.42     .  0.28  0.27 -1.26 -0.00  0.01  0.03 -0.01  0.01 -0.02    10
+  11    0.01  0.01 -0.01  0.01 -0.02  0.01  0.01 -0.01  0.21  0.31  0.31     .  0.26 -0.85  0.03  0.02  0.04 -0.01  0.03 -0.01    11
+  12    0.02  0.01 -0.00  0.02  0.00  0.01  0.02  0.00  0.33  0.28  0.20  0.14     . -0.94  0.00  0.01  0.01 -0.01  0.01 -0.01    12
+  13   -0.02 -0.00 -0.02  0.01 -0.02  0.01 -0.02 -0.05 -0.98 -1.19 -1.16 -1.03 -1.00     .  0.01 -0.03  0.03 -0.02 -0.00 -0.03    13
+  14   -0.00  0.01  0.00 -0.02 -0.01 -0.01 -0.00 -0.02 -0.02 -0.03 -0.03 -0.01 -0.01 -0.01     .  0.21  0.24  0.28  0.36  0.33    14
+  15    0.01  0.01  0.00  0.00 -0.01  0.00  0.01  0.02  0.01 -0.00  0.01 -0.01  0.02 -0.02  0.25     .  0.30  0.30  0.27  0.21    15
+  16    0.02  0.02 -0.05  0.01  0.00  0.02  0.02 -0.06 -0.00 -0.00  0.01 -0.01 -0.01 -0.01  0.29  0.24     .  0.37  0.30  0.21    16
+  17    0.01 -0.01  0.01  0.01  0.01  0.01  0.01  0.03  0.01 -0.00 -0.02 -0.03 -0.02 -0.03  0.27  0.22  0.33     .  0.30  0.35    17
+  18   -0.00  0.02 -0.01 -0.02 -0.01  0.01 -0.00 -0.03 -0.01  0.00 -0.01 -0.00  0.01 -0.00  0.38  0.22  0.36  0.34     .  0.22    18
+  19    0.00  0.00  0.00  0.00  0.01  0.00  0.00  0.05  0.01 -0.03 -0.02 -0.02 -0.01 -0.02  0.27  0.18  0.25  0.41  0.22     .    19
+           0     1     2     3     4     5     6     7     8     9    10    11    12    13    14    15    16    17    18    19
+
+mlp: mastications that did not reach their target: 0 of 100 (travel pass: 0 of 100)
+  seed 0: rates used by the mastications: [0.01, 0.03]
+  seed 1: rates used by the mastications: [0.03]
+  seed 2: rates used by the mastications: [0.01, 0.03]
+  seed 3: rates used by the mastications: [0.03]
+  seed 4: rates used by the mastications: [0.03]
+
+M1: entry(0,6) and entry(6,0) both >= 0.9
+  seed 0: true   entry(0,6)=0.9999 entry(6,0)=0.9999
+  seed 1: true   entry(0,6)=0.9999 entry(6,0)=0.9999
+  seed 2: true   entry(0,6)=0.9999 entry(6,0)=0.9999
+  seed 3: true   entry(0,6)=0.9999 entry(6,0)=0.9999
+  seed 4: true   entry(0,6)=0.9999 entry(6,0)=0.9999
+M1: holds   (true in 5 of 5 seeds, 4 needed)
+
+M2: mean size across groups <= half of the mean entry inside a group
+  seed 0: true   mean size across groups=0.0330 mean inside a group=0.3638
+  seed 1: true   mean size across groups=0.0239 mean inside a group=0.2468
+  seed 2: true   mean size across groups=0.0249 mean inside a group=0.2481
+  seed 3: true   mean size across groups=0.0321 mean inside a group=0.3076
+  seed 4: true   mean size across groups=0.0238 mean inside a group=0.2807
+M2: holds   (true in 5 of 5 seeds, 4 needed)
+
+M3: batch 13 has the lowest own-group mean entry of all 20
+  seed 0: true   own-group mean of 13=-1.1294 lowest of the others=0.0841
+  seed 1: true   own-group mean of 13=-1.1300 lowest of the others=-0.1436
+  seed 2: true   own-group mean of 13=-1.2582 lowest of the others=-0.0672
+  seed 3: true   own-group mean of 13=-0.6181 lowest of the others=-0.0430
+  seed 4: true   own-group mean of 13=-1.2234 lowest of the others=-0.1343
+M3: holds   (true in 5 of 5 seeds, 4 needed)
