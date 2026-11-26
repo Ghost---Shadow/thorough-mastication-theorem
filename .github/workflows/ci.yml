@@ -1,0 +1,71 @@
+name: Checks
+
+# SWITCHED OFF WHILE THE REPOSITORY IS PRIVATE.
+# Every job below has `if: ${{ !github.event.repository.private }}`, so nothing runs (and no
+# minutes are used) until the repository is made public. On that day the checks start by
+# themselves on the next push. This workflow has not run yet, so expect to fix it once.
+#
+# What it checks:
+#   lean   - a fresh clone builds: Lake fetches the squiggly line library and Mathlib, and
+#            the proofs compile with no `sorry`.
+#   table  - docs/theorem-table.md is what scripts/make_theorem_table.py makes from the
+#            library at the commit pinned in lean/lakefile.toml.
+#   python - the numeric check of the claims runs, and the experiment script passes its
+#            smoke test on the processor.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lean:
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch the squiggly line library and Mathlib
+        working-directory: lean
+        run: lake update
+      - name: Get prebuilt Mathlib, so that it is not compiled here
+        working-directory: lean
+        run: lake exe cache get
+      - name: Build the proofs
+        working-directory: lean
+        run: lake build
+      - name: No sorry in the sources
+        run: "! grep -rn 'sorry' lean/ThoroughMastication lean/ThoroughMastication.lean"
+
+  table:
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the pinned commit of the library
+        id: pin
+        run: echo "rev=$(sed -n 's/^rev = "\([0-9a-f]*\)"$/\1/p' lean/lakefile.toml)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: Ghost---Shadow/squiggly-line-theorem
+          ref: ${{ steps.pin.outputs.rev }}
+          path: squiggly-line-theorem
+      - name: The theorem table is made from the library
+        run: python3 scripts/make_theorem_table.py --library squiggly-line-theorem --check
+
+  python:
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install numpy and torch for the processor
+        run: |
+          pip install numpy
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: The claims check with numbers
+        run: python3 scripts/check_claims.py
+      - name: The experiment script passes its smoke test
+        run: python3 experiments/tmt_sgd.py --smoke

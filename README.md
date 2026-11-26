@@ -101,7 +101,10 @@ lake env lean -DautoImplicit=false ../../thorough-mastication-theorem/lean/Thoro
 
 This is how it was checked on 26 Nov 2026: no errors, no warnings, and every theorem rests
 only on Lean's three standard axioms. `lean/lakefile.toml` also sets this folder up as its own
-Lake project that fetches the library, but `lake build` has not been run there yet.
+Lake project that fetches the library by itself, so a clone of this repository alone is meant
+to be enough (`lake exe cache get`, then `lake build`, in `lean/`). That build has not been run
+yet. `.github/workflows/ci.yml` runs it, and it is switched off while the repository is
+private.
 
 **My reading.**
 

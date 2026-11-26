@@ -8,6 +8,13 @@ with no verdict is marked "not judged".
 
     python scripts/make_theorem_table.py --write     # rewrite the page
     python scripts/make_theorem_table.py --check     # fail if the page is out of date
+    python scripts/make_theorem_table.py --new       # list the theorems nobody has judged
+    python scripts/make_theorem_table.py --mark-seen # after judging them: record them as seen
+
+When the library gains theorems: run --write, then --new. Each new theorem shows as "not
+judged", even in a file that already has a verdict, because docs/seen-theorems.txt lists the
+theorems that were there at the last pass. Give the ones that help a verdict of their own in
+docs/verdicts.json, run --mark-seen, then --write again.
 
 The library is looked for in --library, then in the variable SQUIGGLY_LINE_REPO, then next
 to this repository (../squiggly-line-theorem or ../squiggly-line-conjecture).
@@ -24,6 +31,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 PAGE = HERE / "docs" / "theorem-table.md"
 VERDICTS = HERE / "docs" / "verdicts.json"
+SEEN = HERE / "docs" / "seen-theorems.txt"  # the theorems that were there at the last pass
 LIBRARY_URL = "https://github.com/Ghost---Shadow/squiggly-line-theorem"
 PREFIX = "lean/SquigglyLine/"
 NOT_JUDGED = ["not judged", "New since the last pass. Nobody has looked at it yet."]
@@ -70,6 +78,8 @@ def judge(theorem: dict, verdicts: dict) -> list[str]:
     for key in (theorem["name"], theorem["short"]):
         if key in verdicts["theorems"]:
             return verdicts["theorems"][key]
+    if theorem["name"] not in verdicts["seen"]:
+        return NOT_JUDGED  # added to the library after the last pass
     folder_verdict = None
     for group in verdicts["groups"]:
         for pattern in group["files"]:
@@ -145,11 +155,23 @@ def main() -> int:
     parser.add_argument("--library", help="path to a checkout of the squiggly line library")
     parser.add_argument("--write", action="store_true", help="rewrite the page")
     parser.add_argument("--check", action="store_true", help="fail if the page is out of date")
+    parser.add_argument("--new", action="store_true", help="list the theorems that are not judged")
+    parser.add_argument("--mark-seen", action="store_true",
+                        help="record every theorem of the library as seen, after judging the new ones")
     args = parser.parse_args()
 
     library = find_library(args.library)
     verdicts = json.loads(VERDICTS.read_text(encoding="utf-8"))
     theorems = read_theorems(library)
+    if args.mark_seen:
+        names = sorted(theorem["name"] for theorem in theorems)
+        SEEN.write_text("\n".join(names) + "\n", encoding="utf-8", newline="\n")
+        print(f"recorded {len(names)} theorems as seen")
+    verdicts["seen"] = set(SEEN.read_text(encoding="utf-8").split()) if SEEN.exists() else set()
+    if args.new:
+        for theorem in theorems:
+            if judge(theorem, verdicts)[0] == "not judged":
+                print(f"{theorem['name']}  ({theorem['file']})  {theorem['says']}")
     page = make_page(theorems, verdicts, read_commit(library))
     stale = find_stale(theorems, verdicts)
     for name in stale:

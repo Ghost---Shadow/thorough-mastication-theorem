@@ -69,6 +69,8 @@ class Plan:
     held_out_size: int = HELD_OUT_SIZE
     linear_inputs: int = LINEAR_INPUTS
     device: str = "cpu"
+    worker_index: int = 0  # this process takes every worker_count-th run, starting here
+    worker_count: int = 1
 
 
 def make_smoke_plan() -> Plan:
@@ -288,11 +290,19 @@ def all_runs(plan):
                 yield task, noise, data_mode, chew, rate, seed
 
 
+def worker_path(path, worker_index) -> Path:
+    return path.with_name(f"{path.stem}-w{worker_index}.jsonl")
+
+
 def read_results(path) -> dict:
-    if not path.exists():
-        return {}
-    lines = path.read_text(encoding="utf-8").splitlines()
-    return {record["key"]: record for record in map(json.loads, filter(None, lines))}
+    """Every finished run: the results file and the files of the workers beside it."""
+    records = {}
+    for file in [path] + sorted(path.parent.glob(f"{path.stem}-w*.jsonl")):
+        if file.exists():
+            for line in filter(None, file.read_text(encoding="utf-8").splitlines()):
+                record = json.loads(line)
+                records[record["key"]] = record
+    return records
 
 
 def count_runs(plan):
@@ -313,13 +323,17 @@ def print_list(plan) -> None:
 def run_all(plan) -> None:
     plan.results_path.parent.mkdir(exist_ok=True)
     done = read_results(plan.results_path)
-    for one_run in all_runs(plan):
+    # Several workers can share the card: each takes its own share of the runs and writes
+    # its own file, so no two processes write to one file.
+    write_path = (plan.results_path if plan.worker_count == 1
+                  else worker_path(plan.results_path, plan.worker_index))
+    for index, one_run in enumerate(all_runs(plan)):
         key = make_key(*one_run)
-        if key in done:
+        if index % plan.worker_count != plan.worker_index or key in done:
             continue
         record = run(*one_run, plan)
         record["key"] = key
-        with plan.results_path.open("a", encoding="utf-8") as file:
+        with write_path.open("a", encoding="utf-8") as file:
             file.write(json.dumps(record) + "\n")
         last = record["log"][-1][TEST_LOSS] if record["log"] else float("nan")
         print(f"{key}  test loss {last:.5f}  diverged {record['diverged']}  "
@@ -565,8 +579,13 @@ def main() -> None:
     parser.add_argument("--summarise", action="store_true")
     parser.add_argument("--list", action="store_true", help="count the runs, run nothing")
     parser.add_argument("--smoke", action="store_true", help="a tiny run on the processor")
+    parser.add_argument("--worker", default="0/1", metavar="INDEX/COUNT",
+                        help="take every COUNT-th run starting at INDEX, e.g. 0/4 ... 3/4 for four workers")
     arguments = parser.parse_args()
-    plan = Plan(device=arguments.device)
+    worker_index, worker_count = map(int, arguments.worker.split("/"))
+    if worker_count > 1:
+        torch.set_num_threads(1)  # the workers share the processor too
+    plan = Plan(device=arguments.device, worker_index=worker_index, worker_count=worker_count)
     if arguments.smoke:
         smoke()
     elif arguments.list:
