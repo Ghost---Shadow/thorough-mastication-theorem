@@ -1,0 +1,11 @@
+A chew is a projection: gradient descent and the projection differ by at most 1.33e-15
+C1: largest error in 'distance squared falls by travel squared': 1.42e-13
+C2: reachable points nearer to the full fit than the chewed point: 0 of 1980 tried
+C3: sum of squared travel 361.530, squared distance from start to the full fit 396.628
+C3: travel of chew 1, 20, 40, 60: 3.503, 3.000, 1.817, 1.182
+Ceiling on forgetting: change in old errors over the ceiling, worst 0.234, mean 0.164 (at most 1)
+Distance to the full fit: start 19.916, after 60 chews 5.924
+C4: mean squared error of one number after 1, 10, 100 batches of 16 (noise 1)
+    batches   1: chew 0.06217   running mean 0.06217   1/(16 x batches) = 0.06250
+    batches  10: chew 0.06260   running mean 0.00609   1/(16 x batches) = 0.00625
+    batches 100: chew 0.06464   running mean 0.00062   1/(16 x batches) = 0.00063
