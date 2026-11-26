@@ -14,7 +14,7 @@ for inputs, labels in batches:
         loss = loss_function(model(inputs), labels)
         if arrival_loss is None:
             arrival_loss = loss.item()
-        elif chew == "until" and loss.item() <= 0.01 * arrival_loss:
+        elif mastication == "until" and loss.item() <= 0.01 * arrival_loss:
             break                        # the batch is learned: move on
         optimiser.zero_grad()
         loss.backward()
@@ -24,7 +24,7 @@ for inputs, labels in batches:
 - **Optimiser:** `torch.optim.SGD` with no momentum and no weight decay, so that the loop is
   the one the theorems are about.
 - **Batch:** 32 examples.
-- **Budget:** 10,000 gradient steps per run, the same for every method. A chew of 64 sees 64
+- **Budget:** 10,000 gradient steps per run, the same for every method. A mastication of 64 sees 64
   times fewer examples in that budget. Both counts are logged, so the methods can be compared
   at equal steps and at equal examples.
 
@@ -58,15 +58,15 @@ wrong digit. Validation and test labels are always clean.
 - Seeds: 0 to 4.
 
 That is 750 runs of 10,000 steps: 600 for `linear` and `mlp` (2 tasks, 2 noise levels, 2 data
-modes, 5 chews, 3 rates, 5 seeds) and 150 for `digits`.
+modes, 5 mastications, 3 rates, 5 seeds) and 150 for `digits`.
 
 ## What is measured
 
 - Test loss and validation loss, every 10 steps for the first 500 steps and every 250 steps
   after that, with the number of examples seen so far. For `digits`, test accuracy too.
-- The rise in the loss on the previous batch, measured right after the next chew. This is the
+- The rise in the loss on the previous batch, measured right after the next mastication. This is the
   forgetting.
-- The steps each `until` chew took.
+- The steps each `until` mastication took.
 
 The author's first reason (the batch stays on the card) is measured by counting examples
 loaded, not with a clock. On toy data the loading time is too small to measure.

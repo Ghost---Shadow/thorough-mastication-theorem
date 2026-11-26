@@ -33,7 +33,7 @@ BATCH_SIZE = 32
 POOL_SIZE = 2048  # for linear and mlp; the digits pool is the training set of the file
 HELD_OUT_SIZE = 4096
 STEP_BUDGET = 10_000
-STEP_CAP = 256  # for the chew "until"
+STEP_CAP = 256  # for the mastication "until"
 TOLERANCE = 0.01  # "until": stop at this share of the loss the batch arrived with
 LOG_EVERY_EARLY = 10  # for the first EARLY_STEPS steps
 EARLY_STEPS = 500
@@ -51,7 +51,7 @@ BEAT_SHARE = 0.8  # "lower in at least 4 of the 5 seeds"
 TASKS = ["linear", "mlp", "digits"]
 NOISES = {"linear": [0.0, 0.5], "mlp": [0.0, 0.5], "digits": [0.0, 0.2]}
 DATA_MODES = {"linear": ["stream", "pool"], "mlp": ["stream", "pool"], "digits": ["pool"]}
-CHEWS = ["1", "4", "16", "64", "until"]
+MASTICATIONS = ["1", "4", "16", "64", "until"]
 # The first and last rate of linear and of mlp were added by the stop rule after the first
 # 750 runs (see the second amendment in PREDICTIONS.md).
 RATES = {"linear": [9.0, 3.0, 1.0, 0.3, 0.1], "mlp": [0.3, 0.1, 0.03, 0.01, 0.003],
@@ -227,7 +227,14 @@ def is_log_step(step_count):
         step_count < EARLY_STEPS and step_count % LOG_EVERY_EARLY == 0)
 
 
-def run(task_name, noise, data_mode, chew, rate, seed, plan):
+def mean_or_infinity(values):
+    """The mean. Infinity when a value is not a finite number: the loss blew up on the way."""
+    if not values:
+        return None
+    return statistics.fmean(values) if all(map(math.isfinite, values)) else math.inf
+
+
+def run(task_name, noise, data_mode, mastication, rate, seed, plan):
     """Train one model. Returns the record of the run, without its key."""
     started = time.perf_counter()
     task = make_task(task_name, noise, seed, plan)
@@ -235,14 +242,14 @@ def run(task_name, noise, data_mode, chew, rate, seed, plan):
     task.test = to_device(task.test, plan.device)
     task.validation = to_device(task.validation, plan.device)
     optimiser = torch.optim.SGD(task.model.parameters(), lr=rate)
-    step_cap = STEP_CAP if chew == "until" else int(chew)
-    step_count = example_count = chew_count = 0
+    step_cap = STEP_CAP if mastication == "until" else int(mastication)
+    step_count = example_count = mastication_count = 0
     log, rises, previous, diverged = [], [], None, False
     source = task.batches(data_mode)
     while step_count < plan.budget and not diverged:
         inputs, targets = to_device(next(source), plan.device)
         example_count += len(inputs)
-        chew_count += 1
+        mastication_count += 1
         if previous is not None:
             with torch.no_grad():
                 before = task.loss_function(task.model, *previous).item()
@@ -255,7 +262,7 @@ def run(task_name, noise, data_mode, chew, rate, seed, plan):
                 break
             if arrival_loss is None:
                 arrival_loss = value
-            elif chew == "until" and value <= TOLERANCE * arrival_loss:
+            elif mastication == "until" and value <= TOLERANCE * arrival_loss:
                 break
             optimiser.zero_grad()
             loss.backward()
@@ -270,27 +277,27 @@ def run(task_name, noise, data_mode, chew, rate, seed, plan):
             with torch.no_grad():
                 rises.append(task.loss_function(task.model, *previous).item() - before)
         previous = (inputs, targets)
-    return {"task": task_name, "noise": noise, "data_mode": data_mode, "chew": chew, "rate": rate,
+    return {"task": task_name, "noise": noise, "data_mode": data_mode, "mastication": mastication, "rate": rate,
             "seed": seed, "diverged": diverged, "log": log, "steps": step_count,
-            "examples": example_count, "chews": chew_count,
-            "mean_steps_per_chew": step_count / chew_count,
-            "mean_rise": statistics.fmean(rises) if rises else None,
+            "examples": example_count, "mastications": mastication_count,
+            "mean_steps_per_mastication": step_count / mastication_count,
+            "mean_rise": mean_or_infinity(rises),
             "seconds": time.perf_counter() - started}
 
 
 # ---------------------------------------------------------------- the list of runs and the results file
 
-def make_key(task, noise, data_mode, chew, rate, seed):
-    return f"{task}|{noise}|{data_mode}|{chew}|{rate}|{seed}"
+def make_key(task, noise, data_mode, mastication, rate, seed):
+    return f"{task}|{noise}|{data_mode}|{mastication}|{rate}|{seed}"
 
 
 def all_runs(plan):
-    """Every run of the plan, as (task, noise, data_mode, chew, rate, seed)."""
+    """Every run of the plan, as (task, noise, data_mode, mastication, rate, seed)."""
     for task in TASKS:
-        for noise, data_mode, chew, seed in itertools.product(
-                NOISES[task], DATA_MODES[task], CHEWS, plan.seeds):
+        for noise, data_mode, mastication, seed in itertools.product(
+                NOISES[task], DATA_MODES[task], MASTICATIONS, plan.seeds):
             for rate in plan.rates[task]:
-                yield task, noise, data_mode, chew, rate, seed
+                yield task, noise, data_mode, mastication, rate, seed
 
 
 def worker_path(path, worker_index) -> Path:
@@ -362,11 +369,11 @@ def test_loss_at_examples(record, example_count):
     return record["log"][-1][TEST_LOSS]
 
 
-def choose_rate(results, plan, task, noise, data_mode, chew):
+def choose_rate(results, plan, task, noise, data_mode, mastication):
     """(rate, runs) for the rate with the lowest median validation loss; None if runs are missing."""
     choices = []
     for rate in plan.rates[task]:
-        runs = [results.get(make_key(task, noise, data_mode, chew, rate, seed)) for seed in plan.seeds]
+        runs = [results.get(make_key(task, noise, data_mode, mastication, rate, seed)) for seed in plan.seeds]
         if not all(runs):
             return None
         median = statistics.median(final_loss(record, VALIDATION_LOSS) for record in runs)
@@ -383,7 +390,7 @@ def all_settings():
 
 def choose_everything(results, plan):
     return {(task, noise, data_mode): {
-                chew: choose_rate(results, plan, task, noise, data_mode, chew) for chew in CHEWS}
+                mastication: choose_rate(results, plan, task, noise, data_mode, mastication) for mastication in MASTICATIONS}
             for task, noise, data_mode in all_settings()}
 
 
@@ -403,12 +410,12 @@ def print_table(setting, chosen) -> None:
         print("  not all runs are done")
         return
     accuracy_header = "  median test accuracy" if task == "digits" else ""
-    print(f"  chew  rate   median test loss  examples seen  mean rise  steps per chew{accuracy_header}")
-    for chew, (rate, runs) in chosen.items():
-        line = (f"  {chew:>5}  {rate:<5}  {statistics.median(final_test_losses(runs)):<16.6f}  "
+    print(f"  mastication  rate   median test loss  examples seen  mean rise  steps per mastication{accuracy_header}")
+    for mastication, (rate, runs) in chosen.items():
+        line = (f"  {mastication:>5}  {rate:<5}  {statistics.median(final_test_losses(runs)):<16.6f}  "
                 f"{mean_of(record['examples'] for record in runs):<13.0f}  "
                 f"{mean_of(record['mean_rise'] for record in runs):<9.6f}  "
-                f"{mean_of(record['mean_steps_per_chew'] for record in runs):<14.2f}")
+                f"{mean_of(record['mean_steps_per_mastication'] for record in runs):<14.2f}")
         if task == "digits":
             accuracies = [record["log"][-1][TEST_ACCURACY] for record in runs if record["log"]]
             line += f"  {statistics.median(accuracies):.4f}" if accuracies else "  nan"
@@ -423,8 +430,8 @@ def lower_count(losses_a, losses_b) -> int:
     return sum(a < b for a, b in zip(losses_a, losses_b))
 
 
-def losses_of(chosen_setting, chew):
-    entry = chosen_setting[chew]
+def losses_of(chosen_setting, mastication):
+    entry = chosen_setting[mastication]
     return None if entry is None else final_test_losses(entry[1])
 
 
@@ -432,25 +439,25 @@ def say_count(plan, name_a, name_b, count, how) -> None:
     print(f"  {how}, {name_a} is lower than {name_b} in {count} of {len(plan.seeds)} seeds")
 
 
-def chews_beating_plain(plan, chosen, setting, other_chews, how):
-    """Print, for each chew, in how many seeds it is lower than chew 1. True if any beats it."""
+def mastications_beating_plain(plan, chosen, setting, other_mastications, how):
+    """Print, for each mastication, in how many seeds it is lower than mastication 1. True if any beats it."""
     plain = losses_of(chosen[setting], "1")
     beaten = False
-    for chew in other_chews:
-        losses = losses_of(chosen[setting], chew)
+    for mastication in other_mastications:
+        losses = losses_of(chosen[setting], mastication)
         count = lower_count(losses, plain)
-        say_count(plan, f"chew {chew}", "chew 1", count, f"{setting[0]} noise {setting[1]} {setting[2]} {how}")
+        say_count(plan, f"mastication {mastication}", "mastication 1", count, f"{setting[0]} noise {setting[1]} {setting[2]} {how}")
         beaten = beaten or count >= needed_seeds(plan)
     return beaten
 
 
-def plain_beats(plan, chosen, setting, chew_names, how):
-    """Print, for each chew, in how many seeds chew 1 is lower. True if chew 1 beats all of them."""
+def plain_beats(plan, chosen, setting, mastication_names, how):
+    """Print, for each mastication, in how many seeds mastication 1 is lower. True if mastication 1 beats all of them."""
     plain = losses_of(chosen[setting], "1")
     beats_all = True
-    for chew in chew_names:
-        count = lower_count(plain, losses_of(chosen[setting], chew))
-        say_count(plan, "chew 1", f"chew {chew}", count, f"{setting[0]} noise {setting[1]} {setting[2]} {how}")
+    for mastication in mastication_names:
+        count = lower_count(plain, losses_of(chosen[setting], mastication))
+        say_count(plan, "mastication 1", f"mastication {mastication}", count, f"{setting[0]} noise {setting[1]} {setting[2]} {how}")
         beats_all = beats_all and count >= needed_seeds(plan)
     return beats_all
 
@@ -464,11 +471,11 @@ def verdict(name, all_done, holds) -> None:
 
 
 def equal_example_losses(chosen_setting):
-    """Per seed: chew 1's test loss at the examples chew 64 saw in total, and chew 64's final test loss."""
-    plain_runs, chewed_runs = chosen_setting["1"][1], chosen_setting["64"][1]
-    plain = [test_loss_at_examples(plain_run, chewed_run["examples"])
-             for plain_run, chewed_run in zip(plain_runs, chewed_runs)]
-    return final_test_losses(chewed_runs), plain
+    """Per seed: mastication 1's test loss at the examples mastication 64 saw in total, and mastication 64's final test loss."""
+    plain_runs, masticated_runs = chosen_setting["1"][1], chosen_setting["64"][1]
+    plain = [test_loss_at_examples(plain_run, masticated_run["examples"])
+             for plain_run, masticated_run in zip(plain_runs, masticated_runs)]
+    return final_test_losses(masticated_runs), plain
 
 
 def score_p1(plan, chosen) -> None:
@@ -476,7 +483,7 @@ def score_p1(plan, chosen) -> None:
     print("\nP1, per gradient step: clean labels, new data")
     if not complete(chosen, settings):
         return verdict("P1", False, False)
-    beaten = [chews_beating_plain(plan, chosen, setting, CHEWS[1:], "at equal steps") for setting in settings]
+    beaten = [mastications_beating_plain(plan, chosen, setting, MASTICATIONS[1:], "at equal steps") for setting in settings]
     verdict("P1", True, not any(beaten))
 
 
@@ -488,9 +495,9 @@ def score_p2(plan, chosen) -> None:
         if not complete(chosen, [setting]):
             results[task] = None
             continue
-        chewed, plain = equal_example_losses(chosen[setting])
-        count = lower_count(chewed, plain)
-        say_count(plan, "chew 64", "chew 1", count, f"{task} at equal examples seen")
+        masticated, plain = equal_example_losses(chosen[setting])
+        count = lower_count(masticated, plain)
+        say_count(plan, "mastication 64", "mastication 1", count, f"{task} at equal examples seen")
         results[task] = count >= needed_seeds(plan)
     verdict("P2", results["linear"] is not None, results["linear"])
     verdict("P2 (mlp, reported apart)", results["mlp"] is not None, results["mlp"])
@@ -516,12 +523,12 @@ def score_p4(plan, chosen) -> None:
         return verdict("P4", False, False)
     larger_everywhere = True
     for task, noise, data_mode in settings:
-        rises = {chew: rise_per_seed(chosen[(task, noise, data_mode)][chew][1]) for chew in ["1", "64"]}
+        rises = {mastication: rise_per_seed(chosen[(task, noise, data_mode)][mastication][1]) for mastication in ["1", "64"]}
         pairs = [(big, small) for big, small in zip(rises["64"], rises["1"])
                  if big is not None and small is not None]
         count = sum(big > small for big, small in pairs)
         mean_64, mean_1 = mean_of(rises["64"]), mean_of(rises["1"])
-        print(f"  {task} {data_mode}: rise is larger for chew 64 than for chew 1 in {count} of "
+        print(f"  {task} {data_mode}: rise is larger for mastication 64 than for mastication 1 in {count} of "
               f"{len(plan.seeds)} seeds; means {mean_64:.6f} and {mean_1:.6f}")
         larger_everywhere = larger_everywhere and mean_64 > mean_1
     verdict("P4", True, larger_everywhere)
@@ -533,13 +540,13 @@ def score_p5(plan, chosen) -> None:
     print("\nP5, a fixed pool and the digits (a guess)")
     if not complete(chosen, clean_pools + [noisy_digits]):
         return verdict("P5", False, False)
-    beaten = [chews_beating_plain(plan, chosen, setting, CHEWS[1:], "at equal steps") for setting in clean_pools]
+    beaten = [mastications_beating_plain(plan, chosen, setting, MASTICATIONS[1:], "at equal steps") for setting in clean_pools]
     plain_wins = plain_beats(plan, chosen, noisy_digits, ["64"], "at equal steps")
     verdict("P5", True, not any(beaten) and plain_wins)
 
 
 def print_stop_rule(chosen, plan) -> None:
-    print("\nStop rule: is the best rate of plain SGD (chew 1) at an end of its list?")
+    print("\nStop rule: is the best rate of plain SGD (mastication 1) at an end of its list?")
     for task in TASKS:
         edges = []
         for setting in all_settings():

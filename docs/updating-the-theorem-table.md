@@ -60,7 +60,7 @@ this repository (`../squiggly-line-theorem` or `../squiggly-line-conjecture`).
    it to a group or make a new group:
 
    ```json
-   {"helps": "no", "why": "File: what the file is about, and why that does not bear on a chew.",
+   {"helps": "no", "why": "File: what the file is about, and why that does not bear on a mastication.",
     "files": ["Supporting/Training/NewFile"]}
    ```
 
@@ -95,7 +95,7 @@ this repository (`../squiggly-line-theorem` or `../squiggly-line-conjecture`).
 
 ## What the verdicts mean
 
-- **yes**: the theorem says something about a chew directly, and the reason says what.
+- **yes**: the theorem says something about a mastication directly, and the reason says what.
 - **partly**: it supports a "yes" row or covers a special case.
 - **no**: it is about something else.
 - **not judged**: nobody has looked at it. This is either a theorem added since the last

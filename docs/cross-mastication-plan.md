@@ -1,15 +1,15 @@
 # Plan: cross-mastication, a table of what each batch teaches about the others
 
 Written on 26 Nov 2026, before any code for it existed. The predictions and the stop rule are
-in `experiments/PREDICTIONS-cross-chew.md`.
+in `experiments/PREDICTIONS-cross-mastication.md`.
 
 ## The idea
 
-Use a chew to measure a dataset, not to train on it. Start every chew from the same weights.
-Chew batch `i` until it fits, then measure the loss on every other batch `j`, with no step
-taken on `j`. The entry of the table is the share of batch `j`'s loss that the chew removed:
+Use a mastication to measure a dataset, not to train on it. Start every mastication from the same weights.
+Masticate batch `i` until it fits, then measure the loss on every other batch `j`, with no step
+taken on `j`. The entry of the table is the share of batch `j`'s loss that the mastication removed:
 
-    entry(i, j) = 1 − (loss on j after chewing i) / (loss on j at the start)
+    entry(i, j) = 1 − (loss on j after masticating i) / (loss on j at the start)
 
 It is like cross-validation with the roles turned round: fit on one part, test on all the
 others. The theorems in `docs/proofs.md` say what the two ends mean, for a model that is
@@ -17,7 +17,7 @@ linear in its weights: an entry is 1 when batch `i` spans batch `j` (section 8),
 two share no features (section 9).
 
 A second reading comes from one pass over the data without going back to the start: the
-**travel** of each chew, the distance the weights move. It is 0 for a batch that already fits
+**travel** of each mastication, the distance the weights move. It is 0 for a batch that already fits
 (section 7).
 
 ## The test: datasets where the answer is planted
@@ -42,15 +42,15 @@ built with the structure put in by hand.
 - **Models:** `linear` (288 weights, starting at zero, squared error), where the theorems
   apply; and `mlp` (288 inputs, one hidden layer of 256 `tanh` units, squared error), where
   they are only a guide.
-- **The chew:** gradient descent on the whole batch from the common start, until the loss on
+- **The mastication:** gradient descent on the whole batch from the common start, until the loss on
   the batch is at most one millionth of what it was (one ten-thousandth for `mlp`), or 20,000
   steps. For `linear` the learning rate is one over the largest strength of the batch's own
   kernel, which is always stable. For `mlp` it is the largest of 0.1, 0.03, 0.01, 0.003 at
-  which that chew does not diverge. (First written as "the chew of batch 0"; changed before
+  which that mastication does not diverge. (First written as "the mastication of batch 0"; changed before
   any run, with the scaling of batch 7's combinations by the root of 32: see the amendment in
-  the predictions file.) Whether each chew reached its target is
+  the predictions file.) Whether each mastication reached its target is
   recorded.
-- **The pass for travel:** from the common start, chew the batches in the order 0, 6, 1, 7,
+- **The pass for travel:** from the common start, masticate the batches in the order 0, 6, 1, 7,
   2, 3, 4, 5, 8, 9, ..., 19, without going back. The duplicate comes right after its
   original, and the covered batch right after the batch that covers it.
 - **Seeds:** 0 to 4, each with its own data, teacher and starting weights.
@@ -65,12 +65,12 @@ built with the structure put in by hand.
   third of the 96 directions of its group. A numeric check before the plan gave a mean of
   0.319, with single entries from −0.47 to 0.64. So single entries are noisy, and only
   averages are predicted.
-- **The bad batch:** chewing it teaches the opposite of the teacher, so its entries on its
+- **The bad batch:** masticating it teaches the opposite of the teacher, so its entries on its
   group mates average about −1.
 
 ## Cost
 
-Everything is small: 20 chews and 400 measurements per model and seed. It runs on the
+Everything is small: 20 mastications and 400 measurements per model and seed. It runs on the
 processor in a few minutes and does not need the graphics card.
 
 ## What this does not test

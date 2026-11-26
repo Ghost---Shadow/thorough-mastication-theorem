@@ -1,13 +1,13 @@
-"""Cross-mastication: a table of what chewing one batch teaches about every other batch.
+"""Cross-mastication: a table of what masticating one batch teaches about every other batch.
 
-Plan: docs/cross-chew-plan.md. Predictions and stop rule: experiments/PREDICTIONS-cross-chew.md.
+Plan: docs/cross-mastication-plan.md. Predictions and stop rule: experiments/PREDICTIONS-cross-mastication.md.
 CPU only, float64.
 
-    python experiments/cross_chew.py              run seeds 0 to 4, both models,
-                                                  write experiments/results/cross-chew.json
-    python experiments/cross_chew.py --summarise  print the tables and Q1..Q8, M1..M3 from that file
-    python experiments/cross_chew.py --smoke      one seed, 300 steps per chew, writes
-                                                  experiments/results/cross-chew-smoke.json,
+    python experiments/cross_mastication.py              run seeds 0 to 4, both models,
+                                                  write experiments/results/cross-mastication.json
+    python experiments/cross_mastication.py --summarise  print the tables and Q1..Q8, M1..M3 from that file
+    python experiments/cross_mastication.py --smoke      one seed, 300 steps per mastication, writes
+                                                  experiments/results/cross-mastication-smoke.json,
                                                   numbers mean nothing
 """
 
@@ -24,8 +24,8 @@ import torch
 torch.set_default_dtype(torch.float64)
 
 RESULTS_FOLDER = Path(__file__).resolve().parent / "results"
-RESULTS_PATH = RESULTS_FOLDER / "cross-chew.json"
-SMOKE_PATH = RESULTS_FOLDER / "cross-chew-smoke.json"
+RESULTS_PATH = RESULTS_FOLDER / "cross-mastication.json"
+SMOKE_PATH = RESULTS_FOLDER / "cross-mastication-smoke.json"
 
 SEEDS = [0, 1, 2, 3, 4]
 MODELS = ["linear", "mlp"]
@@ -129,14 +129,14 @@ def flat_parameters(model):
     return torch.cat([parameter.detach().reshape(-1) for parameter in model.parameters()])
 
 
-# ---------------------------------------------------------------- the chew
+# ---------------------------------------------------------------- the mastication
 
 def linear_rate(inputs):
     kernel = (2.0 / BATCH_SIZE) * (inputs @ inputs.T)
     return 1.0 / torch.linalg.eigvalsh(kernel).max().item()
 
 
-def chew(model, inputs, labels, rate, target_share, max_steps):
+def masticate(model, inputs, labels, rate, target_share, max_steps):
     """Full-batch gradient descent. Returns (reached target, steps taken, final loss)."""
     optimizer = torch.optim.SGD(model.parameters(), lr=rate)
     start_loss = batch_loss(model, inputs, labels).item()
@@ -155,23 +155,23 @@ def chew(model, inputs, labels, rate, target_share, max_steps):
     return loss <= target, steps, loss
 
 
-def chew_at_a_safe_rate(model, model_name, inputs, labels, max_steps):
-    """Chew one batch from the model's present weights. Returns (reached target, steps, rate).
+def masticate_at_a_safe_rate(model, model_name, inputs, labels, max_steps):
+    """Masticate one batch from the model's present weights. Returns (reached target, steps, rate).
 
     For linear the rate is one over the largest strength of the batch's kernel. For mlp it is
-    the largest of MLP_RATES at which this chew does not diverge: the loss stays finite and
+    the largest of MLP_RATES at which this mastication does not diverge: the loss stays finite and
     ends below where it started. If every rate diverges, the smallest is used as it is.
     """
     target_share = TARGET_SHARE[model_name]
     if model_name == "linear":
         rate = linear_rate(inputs)
-        did_reach, steps, _ = chew(model, inputs, labels, rate, target_share, max_steps)
+        did_reach, steps, _ = masticate(model, inputs, labels, rate, target_share, max_steps)
         return did_reach, steps, rate
     state_before = copy.deepcopy(model.state_dict())
     start_loss = batch_loss(model, inputs, labels).item()
     for rate in MLP_RATES:
         model.load_state_dict(state_before)
-        did_reach, steps, final_loss = chew(model, inputs, labels, rate, target_share, max_steps)
+        did_reach, steps, final_loss = masticate(model, inputs, labels, rate, target_share, max_steps)
         if math.isfinite(final_loss) and final_loss < start_loss:
             break
     return did_reach, steps, rate
@@ -194,7 +194,7 @@ def run_one(model_name, seed, max_steps):
     rates = []
     for i, (inputs, labels) in enumerate(batches):
         model.load_state_dict(start_state)
-        did_reach, steps, rate = chew_at_a_safe_rate(model, model_name, inputs, labels, max_steps)
+        did_reach, steps, rate = masticate_at_a_safe_rate(model, model_name, inputs, labels, max_steps)
         reached.append(did_reach)
         steps_taken.append(steps)
         rates.append(rate)
@@ -204,7 +204,7 @@ def run_one(model_name, seed, max_steps):
                     loss_after = batch_loss(model, other_inputs, other_labels).item()
                     table[i][j] = 1.0 - loss_after / start_losses[j]
 
-    # The pass for travel: no reset between chews.
+    # The pass for travel: no reset between mastications.
     model.load_state_dict(start_state)
     travel = {}
     loss_ratio_before = {}
@@ -216,7 +216,7 @@ def run_one(model_name, seed, max_steps):
             loss_before = batch_loss(model, inputs, labels).item()
         loss_ratio_before[i] = loss_before / start_losses[i]
         before = flat_parameters(model)
-        did_reach, steps, _ = chew_at_a_safe_rate(model, model_name, inputs, labels, max_steps)
+        did_reach, steps, _ = masticate_at_a_safe_rate(model, model_name, inputs, labels, max_steps)
         travel[i] = torch.linalg.vector_norm(flat_parameters(model) - before).item()
         pass_reached[i] = did_reach
         pass_steps[i] = steps
@@ -225,7 +225,7 @@ def run_one(model_name, seed, max_steps):
         "table": table,
         "reached_target": reached,
         "steps": steps_taken,
-        "rate_per_chew": rates,
+        "rate_per_mastication": rates,
         "start_losses": start_losses,
         "travel_order": TRAVEL_ORDER,
         "travel": [travel[i] for i in range(BATCH_COUNT)],
@@ -245,7 +245,7 @@ def run_all(seeds, max_steps, path):
             results["models"][model_name][str(seed)] = run
             missed = sum(1 for flag in run["reached_target"] if not flag)
             print(f"{model_name} seed {seed}: done in {time.time() - started:.1f} s, "
-                  f"chews not at target: {missed}, max steps in a chew: {max(run['steps'])}",
+                  f"mastications not at target: {missed}, max steps in a mastication: {max(run['steps'])}",
                   flush=True)
     RESULTS_FOLDER.mkdir(exist_ok=True)
     with open(path, "w") as handle:
@@ -310,7 +310,7 @@ def duplicate_pairs(table):
 
 
 def covering_pairs(table):
-    """Ordered pairs (i, j): chewing i covers j, while j does not cover i."""
+    """Ordered pairs (i, j): masticating i covers j, while j does not cover i."""
     return [(i, j) for i in range(BATCH_COUNT) for j in range(BATCH_COUNT)
             if i != j and table[i][j] >= BOUND_DUPLICATE
             and table[j][i] <= BOUND_COVERED_REVERSE]
@@ -390,7 +390,7 @@ PREDICTION_TEXT = {
     "Q4": "same group (leaving out 6, 7, 13): mean entry between 0.2 and 0.45",
     "Q5": "bad batch: mean entry(13, 8..12) <= -0.5 and 13 has the lowest own-group mean of 20",
     "Q6": "travel: batch 6 <= 1% of batch 0, batch 7 <= 1% of batch 1",
-    "Q7": "new group untouched: loss on 8 and on 14 before their chew within 0.1% of the start",
+    "Q7": "new group untouched: loss on 8 and on 14 before their mastication within 0.1% of the start",
     "Q8": "structure recovered: groups are the planted three, duplicates exactly {0,6}, "
           "covering exactly 1 covers 7",
     "M1": "entry(0,6) and entry(6,0) both >= 0.9",
@@ -402,7 +402,7 @@ PREDICTION_TEXT = {
 # ---------------------------------------------------------------- summary printing
 
 def format_cell(value):
-    """Two decimals; a diverged chew gives huge or infinite values, shown in short form."""
+    """Two decimals; a diverged mastication gives huge or infinite values, shown in short form."""
     if math.isfinite(value) and abs(value) < 1000:
         return f"{value:6.2f}"
     return f"{value:6.0e}" if math.isfinite(value) else ("  -inf" if value < 0 else "  +inf")
@@ -411,7 +411,7 @@ def format_cell(value):
 def print_mean_table(model_name, runs):
     seeds = list(runs)
     print(f"\nMean table over seeds {', '.join(seeds)}, model {model_name} "
-          f"(row = batch chewed, column = batch measured)")
+          f"(row = batch masticated, column = batch measured)")
     print("      " + "".join(f"{j:6d}" for j in range(BATCH_COUNT)))
     for i in range(BATCH_COUNT):
         cells = []
@@ -429,7 +429,7 @@ def print_not_reached(model_name, runs):
     total = sum(len(run["reached_target"]) for run in runs.values())
     pass_count = sum(1 for run in runs.values() for flag in run["travel_pass_reached_target"]
                      if not flag)
-    print(f"{model_name}: chews that did not reach their target: {count} of {total} "
+    print(f"{model_name}: mastications that did not reach their target: {count} of {total} "
           f"(travel pass: {pass_count} of {total})")
     for seed, run in runs.items():
         missed = [i for i, flag in enumerate(run["reached_target"]) if not flag]
@@ -458,7 +458,7 @@ def summarise(path, label):
         results = json.load(handle)
     if label:
         print(label)
-    print(f"seeds {results['seeds']}, cap of {results['max_steps']} steps per chew")
+    print(f"seeds {results['seeds']}, cap of {results['max_steps']} steps per mastication")
     for model_name in MODELS:
         runs = results["models"][model_name]
         print(f"\n===== model {model_name} =====")
@@ -467,7 +467,7 @@ def summarise(path, label):
         print_not_reached(model_name, runs)
         if model_name == "mlp":
             for seed, run in runs.items():
-                print(f"  seed {seed}: rates used by the chews: {sorted(set(run['rate_per_chew']))}")
+                print(f"  seed {seed}: rates used by the mastications: {sorted(set(run['rate_per_mastication']))}")
         evaluate = evaluate_linear if model_name == "linear" else evaluate_mlp
         print_predictions(model_name, runs, evaluate)
     if label:
@@ -480,9 +480,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--summarise", action="store_true",
-                        help="print the summary computed from experiments/results/cross-chew.json")
+                        help="print the summary computed from experiments/results/cross-mastication.json")
     parser.add_argument("--smoke", action="store_true",
-                        help="one seed, 300 steps per chew, writes cross-chew-smoke.json")
+                        help="one seed, 300 steps per mastication, writes cross-mastication-smoke.json")
     arguments = parser.parse_args()
 
     if arguments.summarise:
@@ -490,7 +490,7 @@ def main():
     elif arguments.smoke:
         run_all([0], SMOKE_MAX_STEPS, SMOKE_PATH)
         summarise(SMOKE_PATH, label="SMOKE TEST ONLY: the numbers below mean nothing "
-                                    "(one seed, 300 steps per chew)")
+                                    "(one seed, 300 steps per mastication)")
     else:
         run_all(SEEDS, MAX_STEPS, RESULTS_PATH)
         print(f"written {RESULTS_PATH}; run with --summarise to read it")

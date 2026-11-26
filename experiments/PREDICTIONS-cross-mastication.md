@@ -1,12 +1,12 @@
 # Cross-mastication: predictions and stop rule, written before any run
 
 Written on 26 Nov 2026. No code for this test existed when this file was committed. What is
-run is in `docs/cross-chew-plan.md`. The batch numbers below are the ones of that plan.
+run is in `docs/cross-mastication-plan.md`. The batch numbers below are the ones of that plan.
 
 ## How a prediction is scored
 
 Each prediction is checked in each of the 5 seeds. It **holds** when it is true in at least 4
-of them. `entry(i, j)` is the share of batch `j`'s loss removed by chewing batch `i`.
+of them. `entry(i, j)` is the share of batch `j`'s loss removed by masticating batch `i`.
 
 ## Predictions for `linear`, where the theorems apply
 
@@ -21,7 +21,7 @@ of them. `entry(i, j)` is the share of batch `j`'s loss removed by chewing batch
 - **Q6, travel.** In the pass for travel, the travel of batch 6 is at most 1% of the travel
   of batch 0, and the travel of batch 7 is at most 1% of the travel of batch 1.
 - **Q7, a new group arrives untouched.** In the same pass, the loss on batch 8 just before
-  its chew is within 0.1% of its loss at the common start, and the same for batch 14.
+  its mastication is within 0.1% of its loss at the common start, and the same for batch 14.
 - **Q8, the structure is recovered by simple rules.**
   - Groups: join two batches when either entry between them is above 0.01 in size. The joined
     sets are exactly the three planted groups.
@@ -39,7 +39,7 @@ of them. `entry(i, j)` is the share of batch `j`'s loss removed by chewing batch
 ## Stop rule
 
 One run of the plan: two models, five seeds. Nothing is changed and no seed is added after the
-results are seen. If a chew does not reach its target within 20,000 steps, that is reported
+results are seen. If a mastication does not reach its target within 20,000 steps, that is reported
 with the result and the entry is used as it is.
 
 A test of a few steps may be run first, to see that the code does not crash. Its numbers are
@@ -47,15 +47,15 @@ thrown away.
 
 ## Amendment of 26 Nov 2026, before any run
 
-The test of a few steps (one seed, 300 steps a chew) showed a fault in the plan, not a
-result: for `mlp`, the chew of batch 7 diverged. The learning rate was chosen on batch 0, and
+The test of a few steps (one seed, 300 steps a mastication) showed a fault in the plan, not a
+result: for `mlp`, the mastication of batch 7 diverged. The learning rate was chosen on batch 0, and
 the examples of batch 7 were about six times larger than the others, because a combination of
 32 examples was not scaled down. Two changes, made before any run:
 
 - The combinations of batch 7 are divided by the root of 32, so that its examples are as large
   as the others. It is still spanned by batch 1, so nothing changes for the theorems.
-- For `mlp`, the learning rate is chosen for each chew: the largest of 0.1, 0.03, 0.01, 0.003
-  at which that chew does not diverge.
+- For `mlp`, the learning rate is chosen for each mastication: the largest of 0.1, 0.03, 0.01, 0.003
+  at which that mastication does not diverge.
 
 No prediction is changed.
 
