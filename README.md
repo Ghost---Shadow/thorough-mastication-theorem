@@ -1,4 +1,4 @@
-# The Mastery-Learning Argument
+# The Thorough Mastication Theorem
 
 *Does it pay to stay on one batch, or one chapter, until it is learned?*
 
@@ -257,7 +257,7 @@ issue.
 ```bibtex
 @misc{nanda2026mastication,
   author       = {Nanda, Souradeep},
-  title        = {The Mastery-Learning Argument: training on one batch until it is learned},
+  title        = {The Thorough Mastication Theorem: training on one batch until it is learned},
   year         = {2026},
   howpublished = {\url{https://github.com/Ghost---Shadow/thorough-mastication-theorem}},
   note         = {Unaffiliated}
