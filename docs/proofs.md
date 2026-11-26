@@ -190,6 +190,57 @@ lengths.
 
 **Lean:** `error_elsewhere_is_at_most_distance_times_what_sticks_out`
 
+# A chain of chapters: where errors compound
+
+Everything above is for a model with fixed features. There, nothing learned from one batch
+changes how learnable the next one is, so nothing compounds. Sal Khan's point, that without
+chapter 3 there is no chapter 4, needs a model in which a later chapter is built on the
+earlier ones. The simplest one is a chain: the output after chapter `k` is the input times the
+weights of chapters 1 to `k`, multiplied together. So chapter `k` uses everything before it,
+as a school chapter does.
+
+## 11. The signal for a new chapter is the product of the earlier ones
+
+**Statement.** Change the weight of chapter `k` by some amount. The output after chapter `k`
+changes by that amount times the product of the earlier weights times the input.
+
+**So:** the earlier chapters set how much learning signal the new chapter gets.
+
+**Why.** The output after chapter `k` is (product of the earlier weights) times (weight of
+chapter `k`) times the input. The earlier weights are not touched by the change, so the
+output is a straight line in the weight of chapter `k`, with that slope.
+
+**Lean:** `signal_for_a_new_chapter_is_the_product_of_the_earlier_ones`
+
+## 12. Chapters that are mastered pass the whole signal
+
+**Statement.** If the product of the earlier weights is one, a change in the new chapter's
+weight reaches the output in full.
+
+**Why.** Section 11, with the product equal to one.
+
+**Lean:** `mastered_chapters_pass_the_whole_signal`
+
+## 13. Half-learned chapters compound
+
+**Statement.** If each of the `k` earlier weights is at most `m` in size, their product is at
+most `m` to the power `k`.
+
+**So:** with every chapter learned to 90%, the signal after ten chapters is at most 35%, and
+after thirty at most 4%. This is the compounding. A learner that starts with all weights
+small has almost no signal for a late chapter, which is why the late chapter cannot be
+learned first.
+
+**Why.** By induction on the number of chapters: the size of a product is the product of the
+sizes, and each new factor is at most `m`.
+
+**Lean:** `signal_is_at_most_mastery_to_the_power_of_the_chapters`
+
+**In the library.** The same product appears for deep networks in
+`gradient_coming_back_is_at_most_the_same_product` (the gradient coming back is bounded by
+the product of the layer sizes), and `balance_after_step` says how training shares a product
+between its factors. They are related results; the three theorems here do not use them.
+
 ## How this meets the squiggly line
 
 The library's picture of training is travel: a model moves from its start to a fit, and what

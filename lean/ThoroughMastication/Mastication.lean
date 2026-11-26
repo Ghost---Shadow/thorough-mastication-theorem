@@ -523,4 +523,91 @@ theorem batch_mean_is_the_best_single_number
 
 end OneNumber
 
+/-! ### A chain of chapters: the signal for a new chapter passes through the earlier ones -/
+
+section Chain
+
+/-- The output after the first `chapter_count` links of a chain: the input times the product
+of their weights. Chapter `k` of a course built this way uses the weights of chapters 1 to
+`k`. -/
+def CHAIN_OUTPUT (weights : ℕ → ℝ) (chapter_count : ℕ) (input : ℝ) : ℝ :=
+  (∏ chapter ∈ Finset.range chapter_count, weights chapter) * input
+
+/-- **The signal for a new chapter is the product of the earlier ones.** Changing the weight
+of one chapter by `change` changes the output after that chapter by `change` times the
+product of the earlier weights times the input. -/
+theorem signal_for_a_new_chapter_is_the_product_of_the_earlier_ones
+    (weights : ℕ → ℝ)
+    (chapter : ℕ)
+    (change : ℝ)
+    (input : ℝ) :
+    let changed_weights := Function.update weights chapter (weights chapter + change)
+    let output_change :=
+      CHAIN_OUTPUT changed_weights (chapter + 1) input - CHAIN_OUTPUT weights (chapter + 1) input
+    let signal := (∏ earlier ∈ Finset.range chapter, weights earlier) * input
+    output_change = change * signal := by
+  unfold_named_pieces
+  have earlier_are_unchanged :
+      ∏ earlier ∈ Finset.range chapter,
+          Function.update weights chapter (weights chapter + change) earlier
+        = ∏ earlier ∈ Finset.range chapter, weights earlier := by
+    apply Finset.prod_congr rfl
+    intro earlier earlier_is_before
+    have earlier_is_not_this : earlier ≠ chapter :=
+      ne_of_lt (Finset.mem_range.mp earlier_is_before)
+    simp [Function.update, earlier_is_not_this]
+  have this_one_is_changed :
+      Function.update weights chapter (weights chapter + change) chapter
+        = weights chapter + change := by
+    simp
+  unfold CHAIN_OUTPUT
+  rw [Finset.prod_range_succ, Finset.prod_range_succ, earlier_are_unchanged,
+    this_one_is_changed]
+  ring
+
+/-- **Chapters that are mastered pass the whole signal.** If the product of the earlier
+weights is one, a change in the new chapter's weight reaches the output in full. -/
+theorem mastered_chapters_pass_the_whole_signal
+    (weights : ℕ → ℝ)
+    (chapter : ℕ)
+    (change : ℝ)
+    (input : ℝ)
+    (earlier_are_mastered : ∏ earlier ∈ Finset.range chapter, weights earlier = 1) :
+    let changed_weights := Function.update weights chapter (weights chapter + change)
+    let output_change :=
+      CHAIN_OUTPUT changed_weights (chapter + 1) input - CHAIN_OUTPUT weights (chapter + 1) input
+    output_change = change * input := by
+  unfold_named_pieces
+  have signal :
+      CHAIN_OUTPUT (Function.update weights chapter (weights chapter + change)) (chapter + 1) input
+          - CHAIN_OUTPUT weights (chapter + 1) input
+        = change * ((∏ earlier ∈ Finset.range chapter, weights earlier) * input) :=
+    signal_for_a_new_chapter_is_the_product_of_the_earlier_ones weights chapter change input
+  rw [signal, earlier_are_mastered, one_mul]
+
+/-- **Half-learned chapters compound.** If each of the earlier weights is at most `mastery`
+in size, their product is at most `mastery` to the power of their number. With `mastery`
+below one, the signal for a new chapter shrinks geometrically with the chapters before it. -/
+theorem signal_is_at_most_mastery_to_the_power_of_the_chapters
+    (weights : ℕ → ℝ)
+    (mastery : ℝ)
+    (chapter_count : ℕ)
+    (each_is_at_most_mastery :
+      ∀ chapter : ℕ, chapter < chapter_count → |weights chapter| ≤ mastery) :
+    |∏ chapter ∈ Finset.range chapter_count, weights chapter| ≤ mastery ^ chapter_count := by
+  induction chapter_count with
+  | zero => simp
+  | succ previous_count earlier_case =>
+    have earlier_bound :
+        |∏ chapter ∈ Finset.range previous_count, weights chapter| ≤ mastery ^ previous_count :=
+      earlier_case (fun chapter chapter_is_before =>
+        each_is_at_most_mastery chapter (Nat.lt_succ_of_lt chapter_is_before))
+    have last_bound : |weights previous_count| ≤ mastery :=
+      each_is_at_most_mastery previous_count (Nat.lt_succ_self previous_count)
+    rw [Finset.prod_range_succ, abs_mul, pow_succ]
+    exact mul_le_mul earlier_bound last_bound (abs_nonneg _)
+      (le_trans (abs_nonneg _) earlier_bound)
+
+end Chain
+
 end ThoroughMastication
