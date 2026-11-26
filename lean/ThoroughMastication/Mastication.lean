@@ -454,6 +454,37 @@ theorem error_elsewhere_is_at_most_distance_times_what_sticks_out
   rw [only_what_sticks_out_counts]
   exact abs_real_inner_le_norm _ _
 
+/-- **Masticating flipped labels gives the opposite weights.** From a start at zero, if a
+mastication of a batch ends at some weights, a mastication of the same batch with every
+label multiplied by minus one ends at minus those weights. So a batch with flipped labels
+teaches the opposite of what the same batch would teach. -/
+theorem masticating_flipped_labels_gives_the_opposite_weights
+    (predict : Weights →L[ℝ] Outputs)
+    {labels : Outputs}
+    {masticated_weights : Weights}
+    (is_a_mastication : IS_A_MASTICATION predict labels 0 masticated_weights) :
+    IS_A_MASTICATION predict (-labels) 0 (-masticated_weights) := by
+  obtain ⟨weights_fit, vector, weights_move_along_features⟩ := is_a_mastication
+  refine ⟨by rw [map_neg, weights_fit], -vector, ?_⟩
+  rw [weights_move_along_features, map_neg, zero_add, zero_add]
+
+omit [CompleteSpace Weights] [CompleteSpace Outputs] in
+/-- **A batch that sees everything pins the weights down.** If no direction is unseen by a
+batch, any weights that fit it are the full fit. The last chapter of a course of superset
+chapters is such a batch. -/
+theorem weights_that_fit_a_batch_that_sees_everything_are_the_full_fit
+    (predict : Weights →L[ℝ] Outputs)
+    {labels : Outputs}
+    {weights : Weights}
+    {full_fit : Weights}
+    (batch_sees_everything : ∀ direction : Weights, predict direction = 0 → direction = 0)
+    (weights_fit : predict weights = labels)
+    (full_fit_fits : predict full_fit = labels) :
+    weights = full_fit := by
+  have rest_is_unseen : predict (weights - full_fit) = 0 := by
+    rw [map_sub, weights_fit, full_fit_fits, sub_self]
+  exact sub_eq_zero.mp (batch_sees_everything _ rest_is_unseen)
+
 end Probe
 
 /-! ### One number fitted to a batch: a mastication keeps nothing of the past -/
@@ -607,6 +638,51 @@ theorem signal_is_at_most_mastery_to_the_power_of_the_chapters
     rw [Finset.prod_range_succ, abs_mul, pow_succ]
     exact mul_le_mul earlier_bound last_bound (abs_nonneg _)
       (le_trans (abs_nonneg _) earlier_bound)
+
+/-- Changing the weight of one chapter leaves the product of the earlier weights alone. -/
+theorem changing_a_chapter_leaves_the_earlier_product_alone
+    (weights : ℕ → ℝ)
+    (chapter : ℕ)
+    (new_weight : ℝ) :
+    ∏ earlier ∈ Finset.range chapter, Function.update weights chapter new_weight earlier
+      = ∏ earlier ∈ Finset.range chapter, weights earlier := by
+  apply Finset.prod_congr rfl
+  intro earlier earlier_is_before
+  have earlier_is_not_this : earlier ≠ chapter :=
+    ne_of_lt (Finset.mem_range.mp earlier_is_before)
+  simp [Function.update, earlier_is_not_this]
+
+/-- **A later chapter can make up for the earlier ones.** Unless the product of the earlier
+weights is zero, there is a weight for the new chapter that makes the output after it right
+(equal to the input, as the teacher's is), whatever the earlier weights are. -/
+theorem a_later_chapter_can_make_up_for_the_earlier_ones
+    (weights : ℕ → ℝ)
+    (chapter : ℕ)
+    (input : ℝ)
+    (earlier_product_is_not_zero : ∏ earlier ∈ Finset.range chapter, weights earlier ≠ 0) :
+    ∃ new_weight : ℝ,
+      CHAIN_OUTPUT (Function.update weights chapter new_weight) (chapter + 1) input = input := by
+  refine ⟨(∏ earlier ∈ Finset.range chapter, weights earlier)⁻¹, ?_⟩
+  have this_one_is_changed :
+      Function.update weights chapter (∏ earlier ∈ Finset.range chapter, weights earlier)⁻¹ chapter
+        = (∏ earlier ∈ Finset.range chapter, weights earlier)⁻¹ := by
+    simp
+  unfold CHAIN_OUTPUT
+  rw [Finset.prod_range_succ, changing_a_chapter_leaves_the_earlier_product_alone,
+    this_one_is_changed, mul_inv_cancel₀ earlier_product_is_not_zero, one_mul]
+
+/-- **Making up does not repair the earlier chapter.** Whatever weight the new chapter takes,
+the output after the earlier chapters is what it was. A later chapter can be right while an
+earlier one stays wrong. -/
+theorem making_up_does_not_repair_the_earlier_chapters
+    (weights : ℕ → ℝ)
+    (chapter : ℕ)
+    (new_weight : ℝ)
+    (input : ℝ) :
+    CHAIN_OUTPUT (Function.update weights chapter new_weight) chapter input
+      = CHAIN_OUTPUT weights chapter input := by
+  unfold CHAIN_OUTPUT
+  rw [changing_a_chapter_leaves_the_earlier_product_alone]
 
 end Chain
 

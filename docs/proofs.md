@@ -241,6 +241,70 @@ sizes, and each new factor is at most `m`.
 the product of the layer sizes), and `balance_after_step` says how training shares a product
 between its factors. They are related results; the three theorems here do not use them.
 
+## 14. A later chapter can make up for the earlier ones, without repairing them
+
+**Statement.** In the chain, unless the product of the earlier weights is zero, there is a
+weight for the new chapter that makes its output right, whatever the earlier weights are. And
+whatever weight the new chapter takes, the output after the earlier chapters stays what it
+was.
+
+**So:** a later chapter can be right while an earlier one is still wrong. This is what
+time-boxing did in the chain tests: it reached the last chapter with the earlier ones left
+wrong.
+
+**Why.** The output after the new chapter is (product of the earlier weights) times (the new
+weight). Take the new weight to be one over that product. The earlier outputs do not contain
+the new weight at all.
+
+**Lean:** `a_later_chapter_can_make_up_for_the_earlier_ones`,
+`making_up_does_not_repair_the_earlier_chapters`,
+`changing_a_chapter_leaves_the_earlier_product_alone`
+
+# Two more facts behind the tests
+
+## 15. Masticating flipped labels gives the opposite weights
+
+**Statement.** Start at zero. If a mastication of a batch ends at some weights, a mastication
+of the same batch with every label multiplied by minus one ends at minus those weights.
+
+**So:** a batch with flipped labels teaches the opposite of what it should. This is why the
+bad batch had a negative row in the cross-mastication table.
+
+**Why.** Minus the weights give minus the outputs, which are the flipped labels. And minus a
+move along the features is a move along the features.
+
+**Lean:** `masticating_flipped_labels_gives_the_opposite_weights`
+
+## 16. A batch that sees everything pins the weights down
+
+**Statement.** If no direction is unseen by a batch, any weights that fit it are the full fit.
+
+**So:** with superset chapters, the last chapter sees every concept. Fitting it is fitting
+everything, which is why mastery in order ended with every chapter learned, and why the
+travels added up to the whole distance (section 4, with nothing left at the end).
+
+**Why.** Two sets of weights that fit the batch differ by a direction the batch does not see,
+and there is none but zero.
+
+**Lean:** `weights_that_fit_a_batch_that_sees_everything_are_the_full_fit`
+
+# What is proved and what is only measured
+
+| Finding of a test | In Lean? |
+|---|---|
+| Duplicates and covered batches have an entry of 1 (Q1, Q2, S1) | yes, section 8 |
+| Batches with separate features have an entry of 0 (Q3, Q7, S7) | yes, section 9 |
+| A duplicate needs no travel (Q6) | yes, section 7 |
+| A batch with flipped labels teaches the opposite (Q5, M3) | the mechanism, section 15; the size of the negative entry is measured |
+| Batches of one group share about a third (Q4); a chapter teaches `k / j` of a later one (S2) | no: these are averages over random data |
+| Mastery in order of superset chapters forgets nothing (S4) and costs only the new material (S5) | yes, sections 4, 8 and 16 together; the statement about a whole pass is not written as one theorem |
+| Time-boxing sometimes hurt chapter 1 in the linear model (S6) | no: measured, and my explanation is untested |
+| The signal for a late chapter is tiny when the weights are small (behind K1) | the bound, section 13; that gradient descent then stays stuck for a given number of steps is measured |
+| Time-boxing reaches the last chapter with earlier ones wrong (K3, T2) | that it is possible, section 14; that gradient descent does it is measured |
+| Mastery never leaves a chapter it cannot finish in time (T1) | no: a count of steps in one run |
+| The chain forgets earlier chapters (K4) | no; the library's `balance_after_step` is the related result |
+| Everything about the network (`mlp`) | no: the theorems are for models that are linear in their weights, and for the chain |
+
 ## How this meets the squiggly line
 
 The library's picture of training is travel: a model moves from its start to a fit, and what

@@ -2,7 +2,7 @@
 
 *Masticate each batch before you swallow it.*
 
-**Status, 26 Nov 2026.** The idea, nineteen theorems about it proved in Lean for a model that
+**Status, 26 Nov 2026.** The idea, twenty-four theorems about it proved in Lean for a model that
 is linear in its weights, and four tests on toy models. Whether it helps a large network is not
 known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
 **checked with numbers** (by `scripts/check_claims.py`, not proved), **my reading**,
