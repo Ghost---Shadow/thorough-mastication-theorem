@@ -1,0 +1,14 @@
+name = "ThoroughMastication"
+defaultTargets = ["ThoroughMastication"]
+
+# The squiggly line library. It brings Mathlib with it.
+[[require]]
+name = "SquigglyLine"
+git = "https://github.com/Ghost---Shadow/squiggly-line-theorem"
+rev = "36bc1f34c26ea6dfb1b420ee9b78508d03d0f080"
+subDir = "lean"
+
+[[lean_lib]]
+name = "ThoroughMastication"
+# A misspelt name is an error. Without this, Lean quietly makes it a variable.
+leanOptions = { autoImplicit = false }

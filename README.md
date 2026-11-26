@@ -2,12 +2,11 @@
 
 *Chew each batch before you swallow it.*
 
-**Status, 26 Nov 2026.** This is an idea and an argument made by hand and checked with
-numbers. There are no experiments yet. Nothing here is proved in Lean yet, so
-"theorem" in the name is a hope, not a claim. The marks used below: **proved** (in the
-squiggly line library), **checked by hand** (derived here, checked with numbers by
-`scripts/check_claims.py`), **my reading**, **recalled** (from memory, not checked against the
-source).
+**Status, 26 Nov 2026.** The idea, and ten theorems about it proved in Lean for a model that
+is linear in its weights. There are no experiments yet, so whether it helps a real network is
+not known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
+**checked with numbers** (by `scripts/check_claims.py`, not proved), **my reading**,
+**recalled** (from memory, not checked against the source).
 
 ## The idea
 
@@ -67,22 +66,42 @@ a network they are a guide, not a guarantee.
   directions first (`strong_directions_first`). Weak directions take very long, which is why
   "until convergence" needs a cap.
 
-**Checked by hand, not yet in Lean.** Suppose some weights fit every batch (more weights
-than data, no label noise). Call any such weights a *full fit*.
+**Proved here**, in `lean/ThoroughMastication/Chew.lean`. The plain English of each proof is
+in [docs/proofs.md](docs/proofs.md). Suppose some weights fit every batch (more weights than
+data, no label noise). Call any such weights a *full fit*.
 
 - **C1. A chew never moves away from a full fit.** After a chew, the squared distance to a
-  full fit has fallen by exactly the squared travel of the chew. (Pythagoras: the travel is
-  along the batch's features, and the rest of the way to the full fit is across them.)
+  full fit has fallen by exactly the squared travel of the chew
+  (`chew_brings_weights_closer_by_exactly_its_travel`). This is Pythagoras: the travel is
+  along the batch's features, and the rest of the way to the full fit is across them.
 - **C2. No use of one batch does better.** Among all weights that can be reached from the
-  start using only this batch's gradients, the chewed weights are the nearest to every full
-  fit.
-- **C3. The travel runs out.** By C1, the squared travels of all chews add up to at most the
-  squared distance from the start to a full fit. So the chews get shorter, and by the ceiling
-  above so does the forgetting.
+  start by moving along this batch's features, the chewed weights are the nearest to every
+  full fit (`no_use_of_the_batch_gets_nearer_than_the_chew`). One gradient step and a chew
+  stopped early are such moves.
+- **C3. The travel runs out.** The squared travels of all chews add up to at most the squared
+  distance from the start to a full fit
+  (`total_squared_travel_is_at_most_the_first_squared_distance`). So does the forgetting of
+  an old batch, up to the size of its predictor (`total_squared_forgetting_is_bounded`).
 - **C4. With noise, a chew is only as good as its batch.** Take the simplest model, one
-  number fitted to noisy measurements. A chew sets the number to the mean of its batch, so
-  after any number of batches the error is that of one batch. Plain SGD with a falling
-  learning rate keeps the running mean, and its error falls with every batch.
+  number fitted to noisy labels. The best fit to a batch is the batch mean, whatever the
+  start was (`batch_mean_is_the_best_single_number`), so a chew keeps nothing of earlier
+  batches. **Checked with numbers**, not proved: its error stays at the noise of one batch,
+  while plain SGD with a falling learning rate keeps the running mean and improves with
+  every batch.
+
+One thing is assumed and not proved, as in the library: that gradient descent on a batch
+arrives at a fit. In general it only comes as close as you like.
+
+To check the Lean file, from a built checkout of the library:
+
+```bash
+cd squiggly-line-theorem/lean
+lake env lean -DautoImplicit=false ../../thorough-mastication-theorem/lean/ThoroughMastication/Chew.lean
+```
+
+This is how it was checked on 26 Nov 2026: no errors, no warnings, and every theorem rests
+only on Lean's three standard axioms. `lean/lakefile.toml` also sets this folder up as its own
+Lake project that fetches the library, but `lake build` has not been run there yet.
 
 **My reading.**
 
@@ -107,16 +126,17 @@ honest test on small models.
 
 ## Experiments
 
-**None yet, and no experiment code yet.** The theory comes first. What the argument above
-predicts, so that a test can prove it wrong:
+**None run yet.** What the argument above predicts, so that a test can prove it wrong:
 
 - **Per gradient step**, with clean labels and fresh data, chewing does not beat plain SGD.
 - **Per example loaded**, with clean labels, chewing beats plain SGD.
 - **With noisy labels**, plain SGD beats long chews.
 - **Forgetting** of the previous batch grows with the length of the chew.
 
-The exact runs, the criterion and the stop rule will be written and committed before the
-first run. The hardware is one 8 GB graphics card, so the tests will be toy models on toy
+The models, the data and the training loop are in
+[docs/experiment-plan.md](docs/experiment-plan.md). The exact predictions, the criterion and
+the stop rule are in [experiments/PREDICTIONS.md](experiments/PREDICTIONS.md), committed
+before any run. The hardware is one 8 GB graphics card, so the tests are toy models on toy
 data. Whether any of this carries over to large models is not known.
 
 ## Looking for funding
