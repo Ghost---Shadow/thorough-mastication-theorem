@@ -2,9 +2,22 @@
 
 *Does it pay to stay on one batch, or one chapter, until it is learned?*
 
-**Status, 26 Nov 2026.** The idea, twenty-four theorems about it proved in Lean for a model that
-is linear in its weights, and four tests on toy models. Whether it helps a large network is not
-known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
+**Summary, 26 Nov 2026.** This repository asks whether it pays to stay on one batch, or one
+chapter, until it is learned, before moving on. On toy models the answer so far is mostly no.
+
+- **Per gradient step, plain SGD won.** Staying on a batch lost in every run. It helped only
+  per example loaded, and it lost on both counts with noisy labels.
+- **The order of chapters matters; the pace does not.** In a model that builds on what it has
+  learned, the last chapter could not be learned first. But moving on after a fixed time did
+  as well as staying until mastery, and with limited time it did better.
+- **The useful by-product is a probe of a dataset.** Training one batch to the end and
+  measuring the others (cross-mastication) found the planted duplicates, groups and wrong
+  labels.
+- **What is proved:** 24 theorems in Lean, for a model that is linear in its weights and for
+  a chain of chapters. Everything measured is on toy models. Nothing is known for a large
+  network.
+
+The marks used below: **proved** (in Lean, here or in the squiggly line library),
 **checked with numbers** (by `scripts/check_claims.py`, not proved), **my reading**,
 **recalled** (from memory, not checked against the source).
 
@@ -192,11 +205,6 @@ The models, the data and the training loop are in
 the stop rule are in [experiments/PREDICTIONS.md](experiments/PREDICTIONS.md), committed
 before any run. The hardware is one 8 GB graphics card, so the tests are toy models on toy
 data. Whether any of this carries over to large models is not known.
-
-## Looking for funding
-
-This work has no funding and one modest graphics card. If you can fund compute for tests on
-real models, or want to run them yourself, please open an issue.
 
 ## arXiv endorsement
 
