@@ -1,4 +1,4 @@
-results file: experiments/results/runs.jsonl; runs read: 750; runs of the plan done: 750 of 750
+results file: experiments/results/runs.jsonl; runs read: 1150; runs of the plan done: 1150 of 1150
 
 linear, noise 0.0, stream
   mastication  rate   median test loss  examples seen  mean rise  steps per mastication
@@ -29,7 +29,7 @@ linear, noise 0.5, pool
       1  0.3    0.185207          320000         0.000147   1.00          
       4  0.3    0.188606          80000          0.001846   4.00          
      16  0.3    0.205363          20000          0.014921   16.00         
-     64  0.3    0.246549          5024           0.063446   63.69         
+     64  0.1    0.246664          5024           0.030112   63.69         
   until  1.0    0.290501          5523           0.091688   57.94         
 
 mlp, noise 0.0, stream
@@ -51,18 +51,18 @@ mlp, noise 0.0, pool
 mlp, noise 0.5, stream
   mastication  rate   median test loss  examples seen  mean rise  steps per mastication
       1  0.03   0.001938          320000         0.000564   1.00          
-      4  0.01   0.003093          80000          0.000787   4.00          
-     16  0.01   0.006416          20000          0.005470   16.00         
-     64  0.01   0.010162          5024           0.016759   63.69         
-  until  0.01   0.014454          1280           0.029892   250.00        
+      4  0.003  0.002700          80000          0.000048   4.00          
+     16  0.003  0.003861          20000          0.001041   16.00         
+     64  0.003  0.006078          5024           0.006896   63.69         
+  until  0.003  0.012270          1280           0.018939   250.00        
 
 mlp, noise 0.5, pool
   mastication  rate   median test loss  examples seen  mean rise  steps per mastication
-      1  0.01   0.002865          320000         0.000057   1.00          
-      4  0.01   0.003472          80000          0.000767   4.00          
-     16  0.01   0.007097          20000          0.005205   16.00         
-     64  0.01   0.008204          5024           0.016009   63.69         
-  until  0.01   0.015521          1280           0.027615   250.00        
+      1  0.003  0.002663          320000         -0.000004  1.00          
+      4  0.003  0.002834          80000          0.000053   4.00          
+     16  0.003  0.004104          20000          0.001008   16.00         
+     64  0.003  0.005660          5024           0.006696   63.69         
+  until  0.003  0.008017          1280           0.017510   250.00        
 
 digits, noise 0.0, pool
   mastication  rate   median test loss  examples seen  mean rise  steps per mastication  median test accuracy
@@ -129,16 +129,16 @@ P5, a fixed pool and the digits (a guess)
 P5: fails
 
 Stop rule: is the best rate of plain SGD (mastication 1) at an end of its list?
-  linear noise 0.0 stream: True
-  linear noise 0.0 pool: True
+  linear noise 0.0 stream: False
+  linear noise 0.0 pool: False
   linear noise 0.5 stream: False
-  linear noise 0.5 pool: True
-  linear: at an end in 3 of 4 settings
-  mlp noise 0.0 stream: True
-  mlp noise 0.0 pool: True
+  linear noise 0.5 pool: False
+  linear: at an end in 0 of 4 settings
+  mlp noise 0.0 stream: False
+  mlp noise 0.0 pool: False
   mlp noise 0.5 stream: False
   mlp noise 0.5 pool: True
-  mlp: at an end in 3 of 4 settings
+  mlp: at an end in 1 of 4 settings
   digits noise 0.0 pool: False
   digits noise 0.2 pool: False
   digits: at an end in 0 of 2 settings

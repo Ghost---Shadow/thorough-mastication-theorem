@@ -136,6 +136,16 @@ planted, is in [docs/cross-mastication-plan.md](docs/cross-mastication-plan.md),
 eleven predictions held in every seed; the results and their limits are in
 [docs/results-cross-mastication-20261126.md](docs/results-cross-mastication-20261126.md).
 
+**Chapters that are supersets.** The author's point from Sal Khan is that errors compound:
+without chapter 3 there is no chapter 4, and chapter N holds the concepts of chapters 1 to N.
+A third test asked what that structure does in a model with fixed features
+([docs/results-chapters-20261126.md](docs/results-chapters-20261126.md)). Mastering the
+chapters in order forgot nothing, and each chapter cost only its new material. Moving on
+after a fixed number of steps had no such guarantee: the later chapters made chapter 1
+better in 3 seeds and worse in 2, against my prediction. The last chapter alone taught all
+the earlier ones, so nothing compounds in this setting. Compounding needs a model that builds
+on what it has learned, and that is not tested yet.
+
 ## This is not new for linear models
 
 For a model that is linear in its weights, masticating every batch to convergence is the block
@@ -148,7 +158,7 @@ honest test on small models.
 
 ## Experiments
 
-**Run on 26 Nov 2026: 750 toy runs.** The results are in
+**Run on 26 Nov 2026: 1,150 toy runs.** The results are in
 [docs/results-20261126.md](docs/results-20261126.md). What the argument above predicted, and
 what happened:
 
@@ -162,8 +172,8 @@ what happened:
   4 steps ended with a slightly lower test loss than plain SGD in 4 of 5 seeds.
 
 So on these toys the method is the better use of each batch and the worse use of each
-gradient step. The verdicts are provisional: the stop rule allows one more learning rate
-where plain SGD's best rate was at an end of its list, and those runs have not been made.
+gradient step. The stop rule's extra learning rates were run as well (400 of the 1,150 runs), and no
+verdict changed.
 
 The models, the data and the training loop are in
 [docs/experiment-plan.md](docs/experiment-plan.md). The exact predictions, the criterion and
