@@ -2,8 +2,8 @@
 
 *Masticate each batch before you swallow it.*
 
-**Status, 26 Nov 2026.** The idea, sixteen theorems about it proved in Lean for a model that
-is linear in its weights, and a first test on toy models. Whether it helps a large network is not
+**Status, 26 Nov 2026.** The idea, nineteen theorems about it proved in Lean for a model that
+is linear in its weights, and four tests on toy models. Whether it helps a large network is not
 known. The marks used below: **proved** (in Lean, here or in the squiggly line library),
 **checked with numbers** (by `scripts/check_claims.py`, not proved), **my reading**,
 **recalled** (from memory, not checked against the source).
@@ -144,7 +144,17 @@ chapters in order forgot nothing, and each chapter cost only its new material. M
 after a fixed number of steps had no such guarantee: the later chapters made chapter 1
 better in 3 seeds and worse in 2, against my prediction. The last chapter alone taught all
 the earlier ones, so nothing compounds in this setting. Compounding needs a model that builds
-on what it has learned, and that is not tested yet.
+on what it has learned.
+
+**A chain of chapters.** In a chain, each chapter is built on the ones before it, and the
+learning signal for a chapter is the product of the earlier weights (three more theorems,
+`docs/proofs.md`, sections 11 to 13). A fourth test compared ways to pace such a chain
+([docs/results-chain-20261126.md](docs/results-chain-20261126.md)). The order mattered
+enormously: with the same steps, going through the chapters in order solved the last
+chapter, and working on the last chapter alone did not move it. The pace did not matter:
+moving on after a fixed number of steps did as well as staying until each chapter was
+mastered, against my guess. So this toy supports "no chapter 4 without chapter 3" and gives
+no support to mastery pacing.
 
 ## This is not new for linear models
 

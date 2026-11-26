@@ -1,0 +1,55 @@
+
+hard chapter learns 1 times more slowly: budget 112 steps, mastery spent [43, 23, 16, 12, 10, 8] per chapter, a box is 18 steps
+  mastery    error of chapters 1 to 6: 4.69e-01  1.76e+00  2.81e+00  2.36e+00  8.05e-01  1.14e-05
+             weights: 1.685  1.381  1.151  0.947  0.748  0.525
+  time_boxed error of chapters 1 to 6: 4.02e-01  1.67e+00  2.78e+00  2.36e+00  8.12e-01  5.67e-26
+             weights: 1.634  1.402  1.164  0.951  0.749  0.526
+  last_only  error of chapters 1 to 6: 8.10e-01  9.80e-01  9.98e-01  1.00e+00  1.00e+00  1.00e+00
+             weights: 0.100  0.100  0.100  0.100  0.100  0.100
+
+hard chapter learns 4 times more slowly: budget 187 steps, mastery spent [43, 98, 16, 12, 10, 8] per chapter, a box is 31 steps
+  mastery    error of chapters 1 to 6: 4.76e-01  1.77e+00  2.82e+00  2.36e+00  8.06e-01  1.13e-05
+             weights: 1.690  1.378  1.150  0.947  0.748  0.525
+  time_boxed error of chapters 1 to 6: 4.08e-01  1.40e+00  2.72e+00  2.33e+00  8.06e-01  4.93e-32
+             weights: 1.639  1.333  1.212  0.955  0.751  0.527
+  last_only  error of chapters 1 to 6: 8.10e-01  9.80e-01  9.98e-01  1.00e+00  1.00e+00  1.00e+00
+             weights: 0.100  0.100  0.100  0.100  0.100  0.100
+
+hard chapter learns 16 times more slowly: budget 485 steps, mastery spent [43, 396, 16, 12, 10, 8] per chapter, a box is 80 steps
+  mastery    error of chapters 1 to 6: 4.78e-01  1.77e+00  2.82e+00  2.37e+00  8.06e-01  1.13e-05
+             weights: 1.691  1.377  1.150  0.947  0.748  0.525
+  time_boxed error of chapters 1 to 6: 4.07e-01  1.30e+00  2.70e+00  2.33e+00  8.05e-01  0.00e+00
+             weights: 1.638  1.306  1.235  0.956  0.751  0.527
+  last_only  error of chapters 1 to 6: 8.09e-01  9.80e-01  9.98e-01  1.00e+00  1.00e+00  1.00e+00
+             weights: 0.100  0.100  0.100  0.100  0.100  0.100
+
+hard chapter learns 64 times more slowly: budget 1677 steps, mastery spent [43, 1588, 16, 12, 10, 8] per chapter, a box is 279 steps
+  mastery    error of chapters 1 to 6: 4.78e-01  1.77e+00  2.82e+00  2.37e+00  8.06e-01  1.13e-05
+             weights: 1.691  1.377  1.150  0.947  0.748  0.525
+  time_boxed error of chapters 1 to 6: 4.02e-01  1.27e+00  2.69e+00  2.32e+00  8.04e-01  1.23e-32
+             weights: 1.634  1.301  1.242  0.956  0.751  0.527
+  last_only  error of chapters 1 to 6: 8.07e-01  9.79e-01  9.98e-01  1.00e+00  1.00e+00  1.00e+00
+             weights: 0.102  0.102  0.102  0.102  0.102  0.102
+
+K1: 'last chapter only' ends at 0.5 or above on the last chapter; mastery at 0.0001 or below
+  slowness 1: true   last only 1.0000, mastery 1.14e-05
+  slowness 4: true   last only 1.0000, mastery 1.13e-05
+  slowness 16: true   last only 1.0000, mastery 1.13e-05
+  slowness 64: true   last only 1.0000, mastery 1.13e-05
+K1: holds
+
+K2: with no hard chapter, the time-boxed error on the last chapter is at most 10 times mastery's
+  slowness 1: time-boxed / mastery = 4.97e-21
+K2: holds
+
+K3: with a hard chapter (16 and 64), the time-boxed error on the last chapter is at least 10 times mastery's
+  slowness 16: time-boxed / mastery = 0
+  slowness 64: time-boxed / mastery = 1.09e-27
+K3: fails
+
+K4: after the mastery pass, some earlier chapter has an error above 0.0001
+  slowness 1: largest error of chapters 1 to 5 = 2.81e+00
+  slowness 4: largest error of chapters 1 to 5 = 2.82e+00
+  slowness 16: largest error of chapters 1 to 5 = 2.82e+00
+  slowness 64: largest error of chapters 1 to 5 = 2.82e+00
+K4: holds
