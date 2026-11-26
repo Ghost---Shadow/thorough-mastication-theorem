@@ -42,6 +42,8 @@ The [squiggly line theorem](https://github.com/Ghost---Shadow/squiggly-line-theo
 Lean library of 604 theorems about training. Every one of them is listed in
 [docs/theorem-table.md](docs/theorem-table.md) with a verdict: does it help here, and why.
 The first columns of that table are generated, so new theorems show up as "not judged".
+How to bring it up to date is in
+[docs/updating-the-theorem-table.md](docs/updating-the-theorem-table.md).
 
 The main theorem itself does not help: it says which target a model starts closer to, not in
 which order to take steps. The lemmas about the kernel do help. They hold for a model that is
