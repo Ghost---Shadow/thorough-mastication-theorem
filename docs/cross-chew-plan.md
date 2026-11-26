@@ -46,7 +46,9 @@ built with the structure put in by hand.
   the batch is at most one millionth of what it was (one ten-thousandth for `mlp`), or 20,000
   steps. For `linear` the learning rate is one over the largest strength of the batch's own
   kernel, which is always stable. For `mlp` it is the largest of 0.1, 0.03, 0.01, 0.003 at
-  which the chew of batch 0 does not diverge. Whether each chew reached its target is
+  which that chew does not diverge. (First written as "the chew of batch 0"; changed before
+  any run, with the scaling of batch 7's combinations by the root of 32: see the amendment in
+  the predictions file.) Whether each chew reached its target is
   recorded.
 - **The pass for travel:** from the common start, chew the batches in the order 0, 6, 1, 7,
   2, 3, 4, 5, 8, 9, ..., 19, without going back. The duplicate comes right after its

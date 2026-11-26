@@ -45,6 +45,20 @@ with the result and the entry is used as it is.
 A test of a few steps may be run first, to see that the code does not crash. Its numbers are
 thrown away.
 
+## Amendment of 26 Nov 2026, before any run
+
+The test of a few steps (one seed, 300 steps a chew) showed a fault in the plan, not a
+result: for `mlp`, the chew of batch 7 diverged. The learning rate was chosen on batch 0, and
+the examples of batch 7 were about six times larger than the others, because a combination of
+32 examples was not scaled down. Two changes, made before any run:
+
+- The combinations of batch 7 are divided by the root of 32, so that its examples are as large
+  as the others. It is still spanned by batch 1, so nothing changes for the theorems.
+- For `mlp`, the learning rate is chosen for each chew: the largest of 0.1, 0.03, 0.01, 0.003
+  at which that chew does not diverge.
+
+No prediction is changed.
+
 ## What would count as the probe working
 
 Q1 to Q3 are the theorems of `docs/proofs.md` seen in numbers; if they fail, the code is
