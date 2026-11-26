@@ -1,6 +1,6 @@
-# The Thorough Mastication Theorem
+# The Mastery-Learning Argument
 
-*Masticate each batch before you swallow it.*
+*Does it pay to stay on one batch, or one chapter, until it is learned?*
 
 **Status, 26 Nov 2026.** The idea, twenty-four theorems about it proved in Lean for a model that
 is linear in its weights, and four tests on toy models. Whether it helps a large network is not
@@ -209,7 +209,7 @@ issue.
 ```bibtex
 @misc{nanda2026mastication,
   author       = {Nanda, Souradeep},
-  title        = {The Thorough Mastication Theorem: training on one batch until it is learned},
+  title        = {The Mastery-Learning Argument: training on one batch until it is learned},
   year         = {2026},
   howpublished = {\url{https://github.com/Ghost---Shadow/thorough-mastication-theorem}},
   note         = {Unaffiliated}
