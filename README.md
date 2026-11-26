@@ -10,7 +10,8 @@ theorems give the reasons: each further step on the same batch gains less than t
 and in a chain a later chapter can make up for an earlier one. The runs agree: in every test
 where the two differed on the goal, moving on after a fixed time did as well or better. The
 one thing staying bought was fewer examples loaded for the same loss. All of it is on toy
-models.
+models. The exception is a machine where loading a batch is the slow part: see
+"When mastication can win" below.
 
 *Summary of 26 Nov 2026:*
 
@@ -184,6 +185,31 @@ time per chapter reached it.
 was never better than shuffled SGD ([docs/results-class-order-20261126.md](docs/results-class-order-20261126.md)).
 Test accuracy fell from 93% with one step per batch to 32% with 64, and to 10% when each
 class was done once and left: the model then answered "9", the last class, for every image.
+
+## When mastication can win
+
+Time-boxing wins when gradient steps are the cost. Mastication can win when loading is the
+cost. From the runs here, staying on a batch is worth it only if all of these hold:
+
+- **Loading a batch costs much more than a gradient step.** This is the case when the disk,
+  the processor or the bus is slow next to the graphics card, when the data do not fit in
+  memory, or when each example is expensive to get. In the first test the break-even was a
+  batch that costs more than about 16 gradient steps to load for the linear model and about
+  47 for the network. Those are rough numbers from toy models.
+- **The labels are clean.** With noisy labels mastication lost per step and per example.
+- **The batches are mixed.** A batch of one class, masticated, made things worse on MNIST.
+- **The model has room.** The theorems that favour mastication need weights that can fit
+  every batch at once: more weights than data.
+
+One hint goes further: on the small digits dataset, 4 steps per batch ended slightly below
+plain SGD at equal steps. It has not been tested again.
+
+**The author's own case.** The author first tried this many years ago on a laptop with a
+GeForce 930MX, and mastication won there. The rest of the machine was slow enough that keeping
+a batch on the card took away the bottleneck. This is a recollection: no numbers from it
+survive, and it was not repeated here. It fits the first condition above. Every test in this
+repository counted gradient steps and examples, not seconds, and ran on a machine where
+loading is nearly free, so none of them measures that case.
 
 ## This is not new for linear models
 
