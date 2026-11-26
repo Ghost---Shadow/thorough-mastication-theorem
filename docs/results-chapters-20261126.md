@@ -5,7 +5,7 @@ run once, on the processor, in 3 seconds. The predictions were committed before 
 existed. Every number is from `python experiments/chapters.py`; the full output is in
 `experiments/results/chapters-summary.txt`. All mastications reached their target.
 
-The question came from the author's reading of Sal Khan: errors compound, so without chapter 3
+The question came from the mastery-learning argument: errors compound, so without chapter 3
 there is no chapter 4; and school chapters are supersets, chapter N holding the concepts of
 chapters 1 to N. The test asks what that structure does in a model that is linear in its
 weights. It does not test a model that learns its own features.

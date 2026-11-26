@@ -4,7 +4,7 @@ Written on 26 Nov 2026. No code for this test existed when this file was committ
 
 ## The question
 
-Sal Khan's point, as the author put it: each lesson gets a fixed time, the class moves on
+The mastery-learning argument, as the author put it: each lesson gets a fixed time, the class moves on
 before a lesson is learned, and the error compounds, because the next chapter needs this one.
 The theorems of `docs/proofs.md`, sections 11 to 13, say where compounding can come from: in a
 chain, the learning signal for a chapter is the product of the earlier weights.
@@ -44,7 +44,7 @@ This test compares three ways to spend the same number of gradient steps on a ch
 
 ## What the predictions say about the question, if they hold
 
-K1 is Khan's premise in this model: chapter 6 is out of reach without the chapters before it.
+K1 is the argument's premise in this model: chapter 6 is out of reach without the chapters before it.
 K2 and K3 together say when the pace matters: not when every chapter takes the same time,
 only when some chapter needs more than its box. K4 says mastery is not a guarantee against
 forgetting once a model builds on what it has learned.

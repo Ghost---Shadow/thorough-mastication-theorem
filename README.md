@@ -136,7 +136,7 @@ planted, is in [docs/cross-mastication-plan.md](docs/cross-mastication-plan.md),
 eleven predictions held in every seed; the results and their limits are in
 [docs/results-cross-mastication-20261126.md](docs/results-cross-mastication-20261126.md).
 
-**Chapters that are supersets.** The author's point from Sal Khan is that errors compound:
+**Chapters that are supersets.** The mastery-learning argument is that errors compound:
 without chapter 3 there is no chapter 4, and chapter N holds the concepts of chapters 1 to N.
 A third test asked what that structure does in a model with fixed features
 ([docs/results-chapters-20261126.md](docs/results-chapters-20261126.md)). Mastering the

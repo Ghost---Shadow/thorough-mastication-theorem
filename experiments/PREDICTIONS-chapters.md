@@ -4,7 +4,7 @@ Written on 26 Nov 2026. No code for this test existed when this file was committ
 
 ## The question
 
-The author's point, from Sal Khan: in school, errors compound. If you do not understand
+The author's point, from the mastery-learning argument: in school, errors compound. If you do not understand
 chapter 3, you cannot understand chapter 4. And school chapters are supersets: chapter 1 has
 the concepts of chapter 1, chapter 2 has the concepts of chapters 1 and 2, and chapter N has
 the concepts of chapters 1 to N.
@@ -62,7 +62,7 @@ In this setting supersets do the opposite of compounding: every later chapter is
 chance at the earlier ones (S6), and the last chapter alone teaches everything (S1). Disjoint
 chapters give no second chance (S7), but they do not depend on each other either. So in a
 model with fixed features, neither layout makes chapter 4 impossible without chapter 3. If
-Khan's compounding is real for a learner, it has to come from what the learner builds on the
+the compounding is real for a learner, it has to come from what the learner builds on the
 way, which is the chain model.
 
 ## Stop rule

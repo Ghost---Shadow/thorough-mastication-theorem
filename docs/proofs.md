@@ -193,7 +193,7 @@ lengths.
 # A chain of chapters: where errors compound
 
 Everything above is for a model with fixed features. There, nothing learned from one batch
-changes how learnable the next one is, so nothing compounds. Sal Khan's point, that without
+changes how learnable the next one is, so nothing compounds. The mastery-learning argument, that without
 chapter 3 there is no chapter 4, needs a model in which a later chapter is built on the
 earlier ones. The simplest one is a chain: the output after chapter `k` is the input times the
 weights of chapters 1 to `k`, multiplied together. So chapter `k` uses everything before it,

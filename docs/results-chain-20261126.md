@@ -39,7 +39,7 @@ the product of weights 1 to `k` is 1, so each chapter uses all the ones before i
 
 ## What this means for the idea
 
-Of the two halves of the author's reading of Sal Khan, this toy supports one and not the
+Of the two halves of the mastery-learning argument, this toy supports one and not the
 other:
 
 - **"You cannot do chapter 4 without chapter 3"** is true here, as a statement about the
@@ -82,7 +82,7 @@ At 25%, where no prediction was made, time-boxed also reached the goal.
 **What this says.** With limited time, mastery pacing did not leave the chapter it could not
 finish. It needed 1,631 steps to leave chapter 2 and never had them, so it never met chapters
 3 to 6 and made no progress on the goal. A fixed time per chapter moved on, and the later
-chapters made up for the hard one. Sal Khan objects to the fixed time per lesson; in this toy
+chapters made up for the hard one. Mastery learning objects to the fixed time per lesson; in this toy
 the fixed time is what got the learner to the end.
 
 **What it does not say.** It is the same smallest chain, with one weight per chapter. The

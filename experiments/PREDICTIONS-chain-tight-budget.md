@@ -35,7 +35,7 @@ Nothing is random: six runs.
 
 Mastery pacing has a failure of its own: with limited time it does not leave the chapter it
 cannot finish, and so never meets the chapters that could have helped. A fixed time per
-chapter is what Sal Khan objects to, and here it would be what saves the learner. That would
+chapter is what mastery learning objects to, and here it would be what saves the learner. That would
 be a point against the idea as first stated, in this toy.
 
 ## Stop rule
