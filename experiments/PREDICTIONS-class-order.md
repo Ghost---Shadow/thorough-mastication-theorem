@@ -46,6 +46,20 @@ A prediction holds when it is true in at least 4 of the 5 seeds.
 - **C3.** Once through, the test accuracy at the end is at most 30%, and at least 90% of the
   test digits are answered as 9, the last class seen.
 
+## Amendment of 26 Nov 2026, before any code or run: the test is run on MNIST
+
+The author asked for MNIST, so MNIST replaces the scikit-learn digits. Nothing had been run.
+The predictions C1 to C3 are unchanged. What changes:
+
+- **Data:** MNIST, 60,000 training and 10,000 test images of 28 by 28 pixels, pixels divided
+  by 255. It is downloaded once (about 11 MB) and is not kept in the repository.
+- **Model:** 784 inputs, 128 `tanh` units, 10 outputs. The rest is as above: cross-entropy,
+  plain SGD at rate 0.1, batches of 32, 2,000 gradient steps, seeds 0 to 4.
+- **A batch of one class** is 32 training images of that digit, drawn at random. Each visit
+  to a class draws a new batch and masticates it for `m` steps. Once through, each class gets
+  one batch and 200 steps on it.
+- **Test accuracy** is measured on all 10,000 test images at the end of the run.
+
 ## Stop rule
 
 The runs above and nothing more; no change after the results are seen.
