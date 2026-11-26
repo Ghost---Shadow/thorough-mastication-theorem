@@ -2,8 +2,14 @@
 
 *Does it pay to stay on one batch, or one chapter, until it is learned?*
 
-**Summary, 26 Nov 2026.** This repository asks whether it pays to stay on one batch, or one
-chapter, until it is learned, before moving on. On toy models the answer so far is mostly no.
+**Time-box, or stay until it is learned?** That is the dilemma this repository tests: give
+each batch or chapter a fixed time and move on, or stay on it until it is mastered.
+
+**The verdict so far, on toy models: time-box.** In every test where the two differed on the
+goal, moving on after a fixed time did as well or better. The one thing staying bought was
+fewer examples loaded for the same loss.
+
+*Summary of 26 Nov 2026:*
 
 - **Per gradient step, plain SGD won.** Staying on a batch lost in every run. It helped only
   per example loaded, and it lost on both counts with noisy labels.
