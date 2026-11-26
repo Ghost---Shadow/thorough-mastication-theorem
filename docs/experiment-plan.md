@@ -52,7 +52,9 @@ wrong digit. Validation and test labels are always clean.
 ## What is varied
 
 - Steps per batch: 1, 4, 16, 64, `until`.
-- Learning rate: 3, 1, 0.3 for `linear`; 0.3, 0.1, 0.03 for `mlp` and `digits`.
+- Learning rate: 3, 1, 0.3 for `linear`; 0.1, 0.03, 0.01 for `mlp`; 0.3, 0.1, 0.03 for
+  `digits`. (The first list for `mlp` was 0.3, 0.1, 0.03. It was changed before any run: see
+  the amendment in `experiments/PREDICTIONS.md`.)
 - Seeds: 0 to 4.
 
 That is 750 runs of 10,000 steps: 600 for `linear` and `mlp` (2 tasks, 2 noise levels, 2 data

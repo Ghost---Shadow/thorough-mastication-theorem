@@ -41,6 +41,14 @@ is added on that side (three times larger or smaller).
 A test of a few steps on the processor may be run first, to see that the code does not crash.
 Its numbers are thrown away.
 
+## Amendment of 26 Nov 2026, before any run of the experiment
+
+The learning rates of `mlp` were 0.3, 0.1, 0.03. A check on the processor, 300 steps of chew 1
+and chew 64 at each rate of each task, looked at one thing only: whether the loss stayed a
+number. For `mlp` at 0.3 it did not, for both chews. Every other rate of every task stayed
+finite. So the list for `mlp` is now 0.1, 0.03, 0.01. No loss from that check was looked at
+or kept, and no prediction was changed.
+
 ## What would count as the idea working
 
 P2 holding is the idea working in the sense the theorems support: fewer examples loaded for
